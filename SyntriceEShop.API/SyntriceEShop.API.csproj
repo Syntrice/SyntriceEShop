@@ -12,4 +12,8 @@
       <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.3" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\SyntriceEShop.Common\SyntriceEShop.Common.csproj" />
+    </ItemGroup>
+
 </Project>
