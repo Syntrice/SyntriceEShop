@@ -1,10 +1,13 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
 using SyntriceEShop.API;
+using SyntriceEShop.API.Utility;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.SetupDatabase();
+
+builder.Services.AddSingleton<IPasswordHasher, PasswordHasher>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();

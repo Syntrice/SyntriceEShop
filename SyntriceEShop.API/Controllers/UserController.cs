@@ -8,7 +8,6 @@ namespace SyntriceEShop.API.Controllers;
 [Route("api/user")]
 public class UserController : ControllerBase
 {
-
     [HttpPost]
     [Route("register")]
     public Task<OkResult> RegisterAsync([FromBody] UserRegisterDTO userRegisterDTO)
