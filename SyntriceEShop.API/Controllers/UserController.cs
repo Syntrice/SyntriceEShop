@@ -15,7 +15,7 @@ public class UserController(IUserService userService) : ControllerBase, IUserCon
     {
         var result = await userService.RegisterAsync(userRegisterDTO);
 
-        switch (result.Type)
+        switch (result.Type) // TODO: Unit test return values
         {
             case ServiceResponseType.Success:
                 return Ok(result.Value);
