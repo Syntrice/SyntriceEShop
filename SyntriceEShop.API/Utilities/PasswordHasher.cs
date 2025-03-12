@@ -4,7 +4,9 @@ namespace SyntriceEShop.API.Utilities;
 
 public class PasswordHasher : IPasswordHasher
 {
-
+    // These parameters might be good to be included in the DB, so that they can be changed without affecting password
+    // verification
+    
     private const int SaltSize = 16; // recommended size 128 bits, so 16 bytes
     private const int HashSize = 32; // recommended size 256 bits, so 32 bytes
     private const int Iterations = 100000; // Number of iterations to run the hash function
@@ -23,12 +25,22 @@ public class PasswordHasher : IPasswordHasher
         // PBkdf2: Password-based-key-derivation-function, described in Rfc2898 standard
         byte[] hash = Rfc2898DeriveBytes.Pbkdf2(password, salt, Iterations, Algorithm, HashSize);
         
-        // no hashing for now
+        // passwords are stored as "[passwordhash]-[salt]" format
         return $"{Convert.ToHexString(hash)}-{Convert.ToHexString(salt)}";
     }
 
     public bool Verify(string password, string userPasswordHash)
     {
-        return true;
+        string[] parts = userPasswordHash.Split("-"); // passwords are stored as "[passwordhash]-[salt]" format
+        byte[] hash = Convert.FromHexString(parts[0]);
+        byte[] salt = Convert.FromHexString(parts[1]);
+        
+        // Hash the incoming password
+        byte[] inputHash = Rfc2898DeriveBytes.Pbkdf2(password, salt, Iterations, Algorithm, HashSize);
+        
+        // to avoid timing attacks (where the hacker can use information about how long the algorithm takes to narrow down search)
+        // it is best to use a CryptographicOperations method
+        
+        return CryptographicOperations.FixedTimeEquals(hash, inputHash);
     }
 }
