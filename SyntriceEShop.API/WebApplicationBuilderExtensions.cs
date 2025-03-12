@@ -47,6 +47,7 @@ public static class WebApplicationBuilderExtensions
 
     public static void SetupRepositories(this WebApplicationBuilder builder)
     {
+        builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
         builder.Services.AddScoped<IUserRepository, UserRepository>();
     }
     

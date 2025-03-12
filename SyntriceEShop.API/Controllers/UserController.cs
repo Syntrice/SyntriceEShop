@@ -1,38 +1,27 @@
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using SyntriceEShop.API.Database;
-using SyntriceEShop.API.Utilities;
+using SyntriceEShop.API.Services;
 using SyntriceEShop.Common.Models.UserModel;
 
 namespace SyntriceEShop.API.Controllers;
 
 [ApiController]
 [Route("api/user")]
-public class UserController(IPasswordHasher passwordHasher, ApplicationDbContext applicationDbContext) : ControllerBase, IUserController
+public class UserController(IUserService userService) : ControllerBase, IUserController
 {
     [HttpPost]
     [Route("register")]
-    public async Task<OkObjectResult> RegisterAsync([FromBody] UserRegisterDTO userRegisterDTO)
+    public async Task<IActionResult> RegisterAsync([FromBody] UserRegisterDTO userRegisterDTO)
     {
-        // For now, business logic and data access is handled in the controller. Eventually,
-        // this should be moved to a service and repository. and unit tested accordingly.
+        var result = await userService.RegisterAsync(userRegisterDTO);
         
-        var user = new User()
-        {
-            Username = userRegisterDTO.Username,
-            PasswordHash = passwordHasher.Hash(userRegisterDTO.Password) // hash the password
-        };
-        
-        var created = applicationDbContext.Users.Add(user);
-        await applicationDbContext.SaveChangesAsync();
-        
-        return Ok(created.Entity);
+        return Ok(result.Value);
     }
 
     [HttpPost]
     [Route("login")]
-    public Task<OkResult> LoginAsync([FromBody] UserLoginDTO userLoginDTO)
+    public Task<IActionResult> LoginAsync([FromBody] UserLoginDTO userLoginDTO)
     {
-        return Task.FromResult(Ok());
+        return Task.FromResult<IActionResult>(Ok());
     }
 }
