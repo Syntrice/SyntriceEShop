@@ -26,4 +26,9 @@ public class PasswordHasher : IPasswordHasher
         // no hashing for now
         return $"{Convert.ToHexString(hash)}-{Convert.ToHexString(salt)}";
     }
+
+    public bool Verify(string password, string userPasswordHash)
+    {
+        return true;
+    }
 }

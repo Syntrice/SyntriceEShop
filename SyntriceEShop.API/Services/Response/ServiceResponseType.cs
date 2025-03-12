@@ -6,4 +6,5 @@ public enum ServiceResponseType
     Failure,
     NotFound,
     Conflict,
+    InvalidCredentials,
 }

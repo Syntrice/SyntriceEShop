@@ -32,4 +32,24 @@ public class UserService(IUserRepository userRepository, IUnitOfWork unitOfWork,
         return new ServiceObjectResponse<User>()
             { Type = ServiceResponseType.Success, Value = created, Message = "Successfully registered user." };
     }
+
+    // for testing purpose for now return the user
+    public async Task<ServiceObjectResponse<User>> LoginAsync(UserLoginDTO userLoginDTO)
+    {
+        User? user = await userRepository.GetUserByUsernameAsync(userLoginDTO.Username);
+
+        if (user == null)
+        {
+            return new ServiceObjectResponse<User>() { Type = ServiceResponseType.NotFound, Message = $"User {userLoginDTO.Username} does not exist." };
+        }
+
+        bool verified = passwordHasher.Verify(userLoginDTO.Password, user.PasswordHash);
+
+        if (!verified)
+        {
+            return new ServiceObjectResponse<User>() { Type = ServiceResponseType.InvalidCredentials, Message = "Password is not valid." };
+        }
+
+        return new ServiceObjectResponse<User>() { Type = ServiceResponseType.Success, Value = user };
+    }
 }

@@ -28,8 +28,21 @@ public class UserController(IUserService userService) : ControllerBase, IUserCon
 
     [HttpPost]
     [Route("login")]
-    public Task<IActionResult> LoginAsync([FromBody] UserLoginDTO userLoginDTO)
+    public async Task<IActionResult> LoginAsync([FromBody] UserLoginDTO userLoginDTO)
     {
-        return Task.FromResult<IActionResult>(Ok());
+        var result = await userService.LoginAsync(userLoginDTO);
+        
+        switch (result.Type) // TODO: Unit test return values
+        {
+            case ServiceResponseType.Success:
+                return Ok(result.Value);
+            case ServiceResponseType.NotFound:
+                return NotFound(result.Message);
+            case ServiceResponseType.InvalidCredentials:
+                return Unauthorized(result.Message);
+            default:
+                return StatusCode(500); // Fallback response
+        }
     }
+    
 }

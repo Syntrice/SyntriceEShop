@@ -12,6 +12,11 @@ public class UserRepository(ApplicationDbContext db) : IUserRepository
         return entry.Entity;
     }
 
+    public async Task<User?> GetUserByUsernameAsync(string username)
+    {
+        return await db.Users.FirstOrDefaultAsync(x => x.Username == username);
+    }
+
     public async Task<bool> UsernameExistsAsync(string username)
     {
         return await db.Users.AnyAsync(user => user.Username == username);
