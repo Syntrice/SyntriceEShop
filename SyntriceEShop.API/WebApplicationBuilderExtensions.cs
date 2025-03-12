@@ -1,5 +1,9 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using SyntriceEShop.API.Database;
+using SyntriceEShop.API.Repositories;
+using SyntriceEShop.API.Services;
+using SyntriceEShop.API.Utilities;
 using SyntriceEShop.Common.Models.UserModel;
 
 namespace SyntriceEShop.API;
@@ -39,5 +43,20 @@ public static class WebApplicationBuilderExtensions
                 "Production database system not implemented yet. Please run in development mode " +
                 "(set environment variable ASPNETCORE_ENVIRONMENT=Development).");
         }
+    }
+
+    public static void SetupRepositories(this WebApplicationBuilder builder)
+    {
+        builder.Services.AddScoped<IUserRepository, UserRepository>();
+    }
+    
+    public static void SetupServices(this WebApplicationBuilder builder)
+    {
+        builder.Services.AddScoped<IUserService, UserService>();
+    }
+    
+    public static void SetupUtilities(this WebApplicationBuilder builder)
+    {
+        builder.Services.AddSingleton<IPasswordHasher, PasswordHasher>();
     }
 }

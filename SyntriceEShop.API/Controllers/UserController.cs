@@ -1,14 +1,14 @@
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using SyntriceEShop.API.Database;
-using SyntriceEShop.API.Utility;
+using SyntriceEShop.API.Utilities;
 using SyntriceEShop.Common.Models.UserModel;
 
 namespace SyntriceEShop.API.Controllers;
 
 [ApiController]
 [Route("api/user")]
-public class UserController(IPasswordHasher passwordHasher, ApplicationDbContext applicationDbContext) : ControllerBase
+public class UserController(IPasswordHasher passwordHasher, ApplicationDbContext applicationDbContext) : ControllerBase, IUserController
 {
     [HttpPost]
     [Route("register")]

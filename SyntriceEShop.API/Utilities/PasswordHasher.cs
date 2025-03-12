@@ -1,4 +1,4 @@
-namespace SyntriceEShop.API.Utility;
+namespace SyntriceEShop.API.Utilities;
 
 public class PasswordHasher : IPasswordHasher
 {
