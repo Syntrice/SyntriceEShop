@@ -10,6 +10,11 @@
     <ItemGroup>
       <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.3" />
       <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.3" />
+      <PackageReference Include="Swashbuckle.AspNetCore" Version="7.3.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\SyntriceEShop.Common\SyntriceEShop.Common.csproj" />
     </ItemGroup>
 
 </Project>
