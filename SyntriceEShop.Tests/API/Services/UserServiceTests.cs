@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Identity;
 using NSubstitute;
+using Shouldly;
 using SyntriceEShop.API.Repositories;
 using SyntriceEShop.API.Services;
+using SyntriceEShop.API.Services.Response;
 using SyntriceEShop.API.Utilities;
 using SyntriceEShop.Common.Models.UserModel;
 
@@ -24,7 +26,7 @@ public class UserServiceTests
     }
 
     [Test]
-    public async Task RegisterAsync_ShouldCall_UnitOfWork_SaveChangesAsync()
+    public async Task RegisterAsync_CallsUnitOfWork_SaveChangesAsync()
     {
         // Arrange
         var userRegisterDTO = new UserRegisterDTO() { Username = "username", Password = "password" };
@@ -37,7 +39,7 @@ public class UserServiceTests
     }
 
     [Test]
-    public async Task RegisterAsync_ShouldCall_Repository_Add()
+    public async Task RegisterAsync_CallsRepository_Add()
     {
         // Arrange
         var userRegisterDTO = new UserRegisterDTO() { Username = "username", Password = "password" };
@@ -50,7 +52,7 @@ public class UserServiceTests
     }
     
     [Test]
-    public async Task RegisterAsync_ShouldCall_PasswordHasher_Hash()
+    public async Task RegisterAsync_CallsPasswordHasher_Hash()
     {
         // Arrange
         var userRegisterDTO = new UserRegisterDTO() { Username = "username", Password = "password" };
@@ -60,5 +62,32 @@ public class UserServiceTests
         
         // Assert
         _passwordHasher.Received(1).Hash(userRegisterDTO.Password);
+    }
+
+    [Test]
+    public async Task RegisterAsync_CallsRepository_UsernameExistsAsync()
+    {
+        // Arrange
+        var userRegisterDTO = new UserRegisterDTO() { Username = "username", Password = "password" };
+        
+        // Act
+        await _userService.RegisterAsync(userRegisterDTO);
+        
+        // Assert
+        await _repository.Received(1).UsernameExistsAsync(userRegisterDTO.Username);
+    }
+
+    [Test]
+    public async Task RegisterAsync_WhenRepositoryUsernameExists_ReturnsConflictResponseType()
+    {
+        // Arrange
+        var userRegisterDTO = new UserRegisterDTO() { Username = "username", Password = "password" };
+        _repository.UsernameExistsAsync(userRegisterDTO.Username).Returns(true);
+        
+        // Act
+        var response = await _userService.RegisterAsync(userRegisterDTO);
+        
+        // Assert
+        response.Type.ShouldBe(ServiceResponseType.Conflict);
     }
 }

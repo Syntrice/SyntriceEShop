@@ -11,4 +11,9 @@ public class UserRepository(ApplicationDbContext db) : IUserRepository
         var entry = db.Users.Add(user);
         return entry.Entity;
     }
+
+    public async Task<bool> UsernameExistsAsync(string username)
+    {
+        return await db.Users.AnyAsync(user => user.Username == username);
+    }
 }

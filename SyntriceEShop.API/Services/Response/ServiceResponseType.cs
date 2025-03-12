@@ -4,5 +4,6 @@ public enum ServiceResponseType
 {
     Success,
     Failure,
-    NotFound
+    NotFound,
+    Conflict,
 }
