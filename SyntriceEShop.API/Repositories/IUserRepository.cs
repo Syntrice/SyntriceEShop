@@ -1,6 +1,8 @@
+using SyntriceEShop.Common.Models.UserModel;
+
 namespace SyntriceEShop.API.Repositories;
 
-public class IUserRepository
+public interface IUserRepository
 {
-
+    User Add(User user);
 }
