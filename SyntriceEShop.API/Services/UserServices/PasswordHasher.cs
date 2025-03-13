@@ -1,6 +1,6 @@
 using System.Security.Cryptography;
 
-namespace SyntriceEShop.API.Utilities;
+namespace SyntriceEShop.API.Services.UserServices;
 
 public class PasswordHasher : IPasswordHasher
 {

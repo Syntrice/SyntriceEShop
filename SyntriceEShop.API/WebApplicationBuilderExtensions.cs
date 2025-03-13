@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using SyntriceEShop.API.Database;
 using SyntriceEShop.API.Repositories;
 using SyntriceEShop.API.Services;
-using SyntriceEShop.API.Utilities;
+using SyntriceEShop.API.Services.UserServices;
 using SyntriceEShop.Common.Models.UserModel;
 
 namespace SyntriceEShop.API;
@@ -54,10 +54,7 @@ public static class WebApplicationBuilderExtensions
     public static void SetupServices(this WebApplicationBuilder builder)
     {
         builder.Services.AddScoped<IUserService, UserService>();
-    }
-    
-    public static void SetupUtilities(this WebApplicationBuilder builder)
-    {
         builder.Services.AddSingleton<IPasswordHasher, PasswordHasher>();
+
     }
 }

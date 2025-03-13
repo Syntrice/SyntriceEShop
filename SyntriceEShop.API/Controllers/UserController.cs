@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using SyntriceEShop.API.Services;
-using SyntriceEShop.API.Services.Response;
+using SyntriceEShop.API.Services.UserServices;
 using SyntriceEShop.Common.Models.UserModel;
 
 namespace SyntriceEShop.API.Controllers;

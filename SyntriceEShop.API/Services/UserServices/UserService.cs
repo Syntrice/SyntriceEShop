@@ -1,9 +1,7 @@
 using SyntriceEShop.API.Repositories;
-using SyntriceEShop.API.Services.Response;
-using SyntriceEShop.API.Utilities;
 using SyntriceEShop.Common.Models.UserModel;
 
-namespace SyntriceEShop.API.Services;
+namespace SyntriceEShop.API.Services.UserServices;
 
 public class UserService(IUserRepository userRepository, IUnitOfWork unitOfWork, IPasswordHasher passwordHasher)
     : IUserService
