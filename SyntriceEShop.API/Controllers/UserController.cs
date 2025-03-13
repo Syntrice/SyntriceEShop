@@ -19,7 +19,7 @@ public class UserController(IUserService userService) : ControllerBase, IUserCon
         switch (result.Type) // TODO: Unit test return values
         {
             case ServiceResponseType.Success:
-                return Ok(result.Value);
+                return Ok();
             case ServiceResponseType.Conflict:
                 return Conflict(result.Message);
             default:
