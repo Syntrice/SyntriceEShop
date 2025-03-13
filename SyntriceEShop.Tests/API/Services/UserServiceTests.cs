@@ -8,6 +8,7 @@ using SyntriceEShop.Common.Models.UserModel;
 
 namespace SyntriceEShop.Tests.API.Services;
 
+[TestFixture]
 public class UserServiceTests
 {
     private IUserRepository _repository;
@@ -15,7 +16,7 @@ public class UserServiceTests
     private IPasswordHasher _passwordHasher;
     private ITokenProvider _tokenProvider;
     private UserService _userService;
-    
+
     [SetUp]
     public void Setup()
     {
@@ -25,70 +26,94 @@ public class UserServiceTests
         _tokenProvider = Substitute.For<ITokenProvider>();
         _userService = new UserService(_repository, _unitOfWork, _passwordHasher, _tokenProvider);
     }
-
-    [Test]
-    public async Task RegisterAsync_CallsUnitOfWork_SaveChangesAsync()
-    {
-        // Arrange
-        var userRegisterDTO = new UserRegisterDTO() { Username = "username", Password = "password" };
-        
-        // Act
-        await _userService.RegisterAsync(userRegisterDTO);
-        
-        // Assert
-        await _unitOfWork.Received(1).SaveChangesAsync();
-    }
-
-    [Test]
-    public async Task RegisterAsync_CallsRepository_Add()
-    {
-        // Arrange
-        var userRegisterDTO = new UserRegisterDTO() { Username = "username", Password = "password" };
-        
-        // Act
-        await _userService.RegisterAsync(userRegisterDTO);
-        
-        // Assert
-        _repository.Received(1).Add(Arg.Any<User>());
-    }
     
-    [Test]
-    public async Task RegisterAsync_CallsPasswordHasher_Hash()
+    [TestFixture]
+    public class RegisterAsync : UserServiceTests
     {
-        // Arrange
-        var userRegisterDTO = new UserRegisterDTO() { Username = "username", Password = "password" };
-        
-        // Act
-        await _userService.RegisterAsync(userRegisterDTO);
-        
-        // Assert
-        _passwordHasher.Received(1).Hash(userRegisterDTO.Password);
+        [Test]
+        public async Task CallsUnitOfWork_SaveChangesAsync()
+        {
+            // Arrange
+            var userRegisterDTO = new UserRegisterDTO() { Username = "username", Password = "password" };
+
+            // Act
+            await _userService.RegisterAsync(userRegisterDTO);
+
+            // Assert
+            await _unitOfWork.Received(1).SaveChangesAsync();
+        }
+
+        [Test]
+        public async Task CallsRepository_Add()
+        {
+            // Arrange
+            var userRegisterDTO = new UserRegisterDTO() { Username = "username", Password = "password" };
+
+            // Act
+            await _userService.RegisterAsync(userRegisterDTO);
+
+            // Assert
+            _repository.Received(1).Add(Arg.Any<User>());
+        }
+
+        [Test]
+        public async Task CallsPasswordHasher_Hash()
+        {
+            // Arrange
+            var userRegisterDTO = new UserRegisterDTO() { Username = "username", Password = "password" };
+
+            // Act
+            await _userService.RegisterAsync(userRegisterDTO);
+
+            // Assert
+            _passwordHasher.Received(1).Hash(userRegisterDTO.Password);
+        }
+
+        [Test]
+        public async Task CallsRepository_UsernameExistsAsync()
+        {
+            // Arrange
+            var userRegisterDTO = new UserRegisterDTO() { Username = "username", Password = "password" };
+
+            // Act
+            await _userService.RegisterAsync(userRegisterDTO);
+
+            // Assert
+            await _repository.Received(1).UsernameExistsAsync(userRegisterDTO.Username);
+        }
+
+        [Test]
+        public async Task WhenRepositoryUsernameExists_ReturnsConflictResponseType()
+        {
+            // Arrange
+            var userRegisterDTO = new UserRegisterDTO() { Username = "username", Password = "password" };
+            _repository.UsernameExistsAsync(userRegisterDTO.Username).Returns(true);
+
+            // Act
+            var response = await _userService.RegisterAsync(userRegisterDTO);
+
+            // Assert
+            response.Type.ShouldBe(ServiceResponseType.Conflict);
+        }
+
+        [Test]
+        public async Task WhenRepositoryUsernameDoesNotExist_ReturnsSuccessResponseType()
+        {
+            // Arrange
+            var userRegisterDTO = new UserRegisterDTO() { Username = "username", Password = "password" };
+            _repository.UsernameExistsAsync(userRegisterDTO.Username).Returns(false);
+
+            // Act
+            var response = await _userService.RegisterAsync(userRegisterDTO);
+
+            // Assert
+            response.Type.ShouldBe(ServiceResponseType.Success);
+        }
     }
 
-    [Test]
-    public async Task RegisterAsync_CallsRepository_UsernameExistsAsync()
+    [TestFixture]
+    public class LoginAsync : UserServiceTests
     {
-        // Arrange
-        var userRegisterDTO = new UserRegisterDTO() { Username = "username", Password = "password" };
         
-        // Act
-        await _userService.RegisterAsync(userRegisterDTO);
-        
-        // Assert
-        await _repository.Received(1).UsernameExistsAsync(userRegisterDTO.Username);
-    }
-
-    [Test]
-    public async Task RegisterAsync_WhenRepositoryUsernameExists_ReturnsConflictResponseType()
-    {
-        // Arrange
-        var userRegisterDTO = new UserRegisterDTO() { Username = "username", Password = "password" };
-        _repository.UsernameExistsAsync(userRegisterDTO.Username).Returns(true);
-        
-        // Act
-        var response = await _userService.RegisterAsync(userRegisterDTO);
-        
-        // Assert
-        response.Type.ShouldBe(ServiceResponseType.Conflict);
     }
 }
