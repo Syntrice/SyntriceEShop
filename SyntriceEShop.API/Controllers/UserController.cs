@@ -16,7 +16,7 @@ public class UserController(IUserService userService) : ControllerBase, IUserCon
     {
         var result = await userService.RegisterAsync(userRegisterDTO);
 
-        switch (result.Type) // TODO: Unit test return values
+        switch (result.Type)
         {
             case ServiceResponseType.Success:
                 return Ok();
@@ -33,7 +33,7 @@ public class UserController(IUserService userService) : ControllerBase, IUserCon
     {
         var result = await userService.LoginAsync(userLoginDTO);
         
-        switch (result.Type) // TODO: Unit test return values
+        switch (result.Type)
         {
             case ServiceResponseType.Success:
                 return Ok(result.Value);

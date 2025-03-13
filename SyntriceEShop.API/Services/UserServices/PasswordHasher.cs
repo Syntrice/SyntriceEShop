@@ -2,6 +2,7 @@ using System.Security.Cryptography;
 
 namespace SyntriceEShop.API.Services.UserServices;
 
+// TODO: Unit Tests
 public class PasswordHasher : IPasswordHasher
 {
     // These parameters might be good to be included in the DB, so that they can be changed without affecting password
