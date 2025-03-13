@@ -7,6 +7,7 @@ using JwtRegisteredClaimNames = System.IdentityModel.Tokens.Jwt.JwtRegisteredCla
 
 namespace SyntriceEShop.API.Services.UserServices;
 
+// TODO: Use options pattern for JWT configuration
 public class TokenProvider(IConfiguration config) : ITokenProvider
 {
     public string Create(User user)

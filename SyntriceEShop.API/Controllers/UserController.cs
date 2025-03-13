@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SyntriceEShop.API.Services;
 using SyntriceEShop.API.Services.UserServices;
@@ -44,5 +45,12 @@ public class UserController(IUserService userService) : ControllerBase, IUserCon
                 return StatusCode(500); // Fallback response
         }
     }
-    
+
+    [HttpGet]
+    [Authorize]
+    [Route("testAuth")]
+    public IActionResult TestAuth()
+    {
+        return Ok("You are authenticated!");
+    }
 }
