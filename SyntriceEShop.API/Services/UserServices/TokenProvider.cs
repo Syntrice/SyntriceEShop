@@ -7,9 +7,9 @@ using JwtRegisteredClaimNames = System.IdentityModel.Tokens.Jwt.JwtRegisteredCla
 
 namespace SyntriceEShop.API.Services.UserServices;
 
-public class TokenProvider : ITokenProvider
+public class TokenProvider(IConfiguration config) : ITokenProvider
 {
-    public string Create(User user, IConfiguration config)
+    public string Create(User user)
     {
         string? secretKey = config["Jwt:SecretKey"];
 

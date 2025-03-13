@@ -55,6 +55,6 @@ public static class WebApplicationBuilderExtensions
     {
         builder.Services.AddScoped<IUserService, UserService>();
         builder.Services.AddSingleton<IPasswordHasher, PasswordHasher>();
-
+        builder.Services.AddSingleton<ITokenProvider, TokenProvider>();
     }
 }

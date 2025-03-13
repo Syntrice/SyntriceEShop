@@ -3,7 +3,7 @@ using SyntriceEShop.Common.Models.UserModel;
 
 namespace SyntriceEShop.API.Services.UserServices;
 
-public class UserService(IUserRepository userRepository, IUnitOfWork unitOfWork, IPasswordHasher passwordHasher)
+public class UserService(IUserRepository userRepository, IUnitOfWork unitOfWork, IPasswordHasher passwordHasher, ITokenProvider tokenProvider)
     : IUserService
 {
     // for testing purpose for now return the user
@@ -32,22 +32,25 @@ public class UserService(IUserRepository userRepository, IUnitOfWork unitOfWork,
     }
 
     // for testing purpose for now return the user
-    public async Task<ServiceObjectResponse<User>> LoginAsync(UserLoginDTO userLoginDTO)
+    public async Task<ServiceObjectResponse<string>> LoginAsync(UserLoginDTO userLoginDTO)
     {
         User? user = await userRepository.GetUserByUsernameAsync(userLoginDTO.Username);
 
         if (user == null)
         {
-            return new ServiceObjectResponse<User>() { Type = ServiceResponseType.NotFound, Message = $"User {userLoginDTO.Username} does not exist." };
+            return new ServiceObjectResponse<string>() { Type = ServiceResponseType.NotFound, Message = $"User {userLoginDTO.Username} does not exist." };
         }
 
         bool verified = passwordHasher.Verify(userLoginDTO.Password, user.PasswordHash);
 
         if (!verified)
         {
-            return new ServiceObjectResponse<User>() { Type = ServiceResponseType.InvalidCredentials, Message = "Password is not valid." };
+            return new ServiceObjectResponse<string>() { Type = ServiceResponseType.InvalidCredentials, Message = "Password is not valid." };
         }
+        
+        // Generate a JWT token using the token provider
+        string token = tokenProvider.Create(user);
 
-        return new ServiceObjectResponse<User>() { Type = ServiceResponseType.Success, Value = user };
+        return new ServiceObjectResponse<string>() { Type = ServiceResponseType.Success, Value = token };
     }
 }

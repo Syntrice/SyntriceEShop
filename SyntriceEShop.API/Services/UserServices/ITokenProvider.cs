@@ -4,5 +4,5 @@ namespace SyntriceEShop.API.Services.UserServices;
 
 public interface ITokenProvider
 {
-    string Create(User user, IConfiguration config);
+    string Create(User user);
 }
