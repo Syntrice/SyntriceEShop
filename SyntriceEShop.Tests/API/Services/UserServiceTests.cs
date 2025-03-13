@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using NSubstitute;
+using NSubstitute.ReturnsExtensions;
 using Shouldly;
 using SyntriceEShop.API.Repositories;
 using SyntriceEShop.API.Services;
@@ -57,7 +58,7 @@ public class UserServiceTests
         }
 
         [Test]
-        public async Task CallsPasswordHasher_Hash()
+        public async Task CallsPasswordHasher_Hash_WithRegisterPassword()
         {
             // Arrange
             var userRegisterDTO = new UserRegisterDTO() { Username = "username", Password = "password" };
@@ -114,6 +115,94 @@ public class UserServiceTests
     [TestFixture]
     public class LoginAsync : UserServiceTests
     {
+        [Test]
+        public async Task CallsRepository_GetUserByUsernameAsync_WithCorrectParameters()
+        {
+            // Arrange
+            var userLoginDTO = new UserLoginDTO() { Username = "username", Password = "password" };
+
+            // Act
+            await _userService.LoginAsync(userLoginDTO);
+
+            // Assert
+            await _repository.Received(1).GetUserByUsernameAsync(userLoginDTO.Username);
+        }
         
+        [Test]
+        public async Task CallsPasswordHasher_Verify_WithCorrectParameters()
+        {
+            // Arrange
+            var userLoginDTO = new UserLoginDTO() { Username = "username", Password = "password" };
+            var userEntity = new User() { Username = "username", PasswordHash = "hashedpassword" };
+            _repository.GetUserByUsernameAsync(userLoginDTO.Username).Returns(userEntity);
+
+            // Act
+            await _userService.LoginAsync(userLoginDTO);
+
+            // Assert
+            _passwordHasher.Received(1).Verify(userLoginDTO.Password, userEntity.PasswordHash);
+        }
+
+        [Test]
+        public async Task CallsTokenProvider_Create_WithUserEntity()
+        {
+            // Arrange
+            var userLoginDTO = new UserLoginDTO() { Username = "username", Password = "password" };
+            var userEntity = new User() { Username = "username", PasswordHash = "hashedpassword" };
+            _repository.GetUserByUsernameAsync(userLoginDTO.Username).Returns(userEntity);
+
+            // Act
+            await _userService.LoginAsync(userLoginDTO);
+
+            // Assert
+            _tokenProvider.Create(userEntity);
+        }
+
+        [Test]
+        public async Task WhenRepository_GetByUsernameReturnsNull_ReturnsNotFoundResponseType()
+        {
+            // Arrange
+            var userLoginDTO = new UserLoginDTO() { Username = "username", Password = "password" };
+            _repository.GetUserByUsernameAsync(userLoginDTO.Username).ReturnsNull();
+
+            // Act
+            var response = await _userService.LoginAsync(userLoginDTO);
+
+            // Assert
+            response.Type.ShouldBe(ServiceResponseType.NotFound);
+        }
+        
+        [Test]
+        public async Task WhenPasswordHasher_VerifyReturnsFalse_ReturnsInvalidCredentialsResponseType()
+        {
+            // Arrange
+            var userLoginDTO = new UserLoginDTO() { Username = "username", Password = "password" };
+            _repository.GetUserByUsernameAsync(userLoginDTO.Username).ReturnsNull();
+
+            // Act
+            var response = await _userService.LoginAsync(userLoginDTO);
+
+            // Assert
+            response.Type.ShouldBe(ServiceResponseType.NotFound);
+        }
+
+        [Test]
+        public async Task WhenAllChecksPass_ReturnsSuccessResponseTypeWithJwtToken()
+        {
+            // Arrange
+            var userLoginDTO = new UserLoginDTO() { Username = "username", Password = "password" };
+            var userEntity = new User() { Username = "username", PasswordHash = "hashedpassword" };
+            var jwtToken = "jwtToken";
+            _repository.GetUserByUsernameAsync(userLoginDTO.Username).Returns(userEntity);
+            _passwordHasher.Verify(userLoginDTO.Password, userEntity.PasswordHash).Returns(true);
+            _tokenProvider.Create(userEntity).Returns(jwtToken);
+
+            // Act
+            var response = await _userService.LoginAsync(userLoginDTO);
+
+            // Assert
+            response.Type.ShouldBe(ServiceResponseType.Success);
+            response.Value.ShouldBe(jwtToken);
+        }
     }
 }
