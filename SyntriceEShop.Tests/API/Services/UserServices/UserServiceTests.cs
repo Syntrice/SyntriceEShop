@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Identity;
 using NSubstitute;
 using NSubstitute.ReturnsExtensions;
 using Shouldly;
@@ -7,7 +6,7 @@ using SyntriceEShop.API.Services;
 using SyntriceEShop.API.Services.UserServices;
 using SyntriceEShop.Common.Models.UserModel;
 
-namespace SyntriceEShop.Tests.API.Services;
+namespace SyntriceEShop.Tests.API.Services.UserServices;
 
 [TestFixture]
 public class UserServiceTests
