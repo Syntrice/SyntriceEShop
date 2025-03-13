@@ -6,12 +6,11 @@ namespace SyntriceEShop.API.Services.UserServices;
 public class UserService(IUserRepository userRepository, IUnitOfWork unitOfWork, IPasswordHasher passwordHasher, ITokenProvider tokenProvider)
     : IUserService
 {
-    // for testing purpose for now return the user
-    public async Task<ServiceObjectResponse<User>> RegisterAsync(UserRegisterDTO userRegisterDTO)
+    public async Task<ServiceResponse> RegisterAsync(UserRegisterDTO userRegisterDTO)
     {
         if (await userRepository.UsernameExistsAsync(userRegisterDTO.Username))
         {
-            return new ServiceObjectResponse<User>()
+            return new ServiceResponse()
             {
                 Type = ServiceResponseType.Conflict,
                 Message = $"User with username {userRegisterDTO.Username} already exists."
@@ -27,8 +26,8 @@ public class UserService(IUserRepository userRepository, IUnitOfWork unitOfWork,
         var created = userRepository.Add(user);
         await unitOfWork.SaveChangesAsync();
 
-        return new ServiceObjectResponse<User>()
-            { Type = ServiceResponseType.Success, Value = created, Message = "Successfully registered user." };
+        return new ServiceResponse()
+            { Type = ServiceResponseType.Success, Message = "Successfully registered user." };
     }
 
     // for testing purpose for now return the user
