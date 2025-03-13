@@ -1,7 +1,7 @@
 using NSubstitute;
 using SyntriceEShop.API.Controllers;
 using SyntriceEShop.API.Services;
-using SyntriceEShop.API.Services.Response;
+using SyntriceEShop.API.Services.UserServices;
 using SyntriceEShop.Common.Models.UserModel;
 
 namespace SyntriceEShop.Tests.API.Controllers;

@@ -1,18 +1,18 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using SyntriceEShop.API;
-using SyntriceEShop.API.Utilities;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.SetupDatabase();
 builder.SetupRepositories();
 builder.SetupServices();
-builder.SetupUtilities();
+builder.SetupAuthentication();
 
 builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+
+builder.SetupSwagger();
 
 var app = builder.Build();
 
@@ -24,6 +24,9 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.MapControllers();
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 await app.RunAsync();
 

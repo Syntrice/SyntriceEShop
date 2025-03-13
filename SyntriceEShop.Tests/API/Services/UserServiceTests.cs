@@ -3,8 +3,7 @@ using NSubstitute;
 using Shouldly;
 using SyntriceEShop.API.Repositories;
 using SyntriceEShop.API.Services;
-using SyntriceEShop.API.Services.Response;
-using SyntriceEShop.API.Utilities;
+using SyntriceEShop.API.Services.UserServices;
 using SyntriceEShop.Common.Models.UserModel;
 
 namespace SyntriceEShop.Tests.API.Services;
@@ -13,8 +12,9 @@ public class UserServiceTests
 {
     private IUserRepository _repository;
     private IUnitOfWork _unitOfWork;
-    private UserService _userService;
     private IPasswordHasher _passwordHasher;
+    private ITokenProvider _tokenProvider;
+    private UserService _userService;
     
     [SetUp]
     public void Setup()
@@ -22,7 +22,8 @@ public class UserServiceTests
         _repository = Substitute.For<IUserRepository>();
         _unitOfWork = Substitute.For<IUnitOfWork>();
         _passwordHasher = Substitute.For<IPasswordHasher>();
-        _userService = new UserService(_repository, _unitOfWork, _passwordHasher);
+        _tokenProvider = Substitute.For<ITokenProvider>();
+        _userService = new UserService(_repository, _unitOfWork, _passwordHasher, _tokenProvider);
     }
 
     [Test]

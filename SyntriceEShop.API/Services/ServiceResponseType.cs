@@ -1,4 +1,4 @@
-namespace SyntriceEShop.API.Services.Response;
+namespace SyntriceEShop.API.Services;
 
 public enum ServiceResponseType
 {
