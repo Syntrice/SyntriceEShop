@@ -1,10 +1,10 @@
 using NSubstitute;
 using NSubstitute.ReturnsExtensions;
 using Shouldly;
+using SyntriceEShop.API.Models.UserModel;
 using SyntriceEShop.API.Repositories;
 using SyntriceEShop.API.Services;
 using SyntriceEShop.API.Services.UserServices;
-using SyntriceEShop.Common.Models.UserModel;
 
 namespace SyntriceEShop.Tests.API.Services.UserServices;
 

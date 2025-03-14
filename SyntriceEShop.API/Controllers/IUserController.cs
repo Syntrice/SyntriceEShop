@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using SyntriceEShop.Common.Models.UserModel;
+using SyntriceEShop.API.Models.UserModel;
 
 namespace SyntriceEShop.API.Controllers;
 

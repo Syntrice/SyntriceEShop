@@ -1,4 +1,6 @@
-namespace SyntriceEShop.Common.Models.UserModel;
+using SyntriceEShop.Common.Models;
+
+namespace SyntriceEShop.API.Models.UserModel;
 
 /// <summary>
 /// Entity for application user

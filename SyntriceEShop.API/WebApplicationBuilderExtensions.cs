@@ -7,10 +7,10 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using SyntriceEShop.API.ApplicationOptions;
 using SyntriceEShop.API.Database;
+using SyntriceEShop.API.Models.UserModel;
 using SyntriceEShop.API.Repositories;
 using SyntriceEShop.API.Services;
 using SyntriceEShop.API.Services.UserServices;
-using SyntriceEShop.Common.Models.UserModel;
 
 namespace SyntriceEShop.API;
 

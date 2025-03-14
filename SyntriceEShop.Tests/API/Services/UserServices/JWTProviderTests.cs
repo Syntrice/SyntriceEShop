@@ -3,8 +3,8 @@ using Microsoft.Extensions.Options;
 using NSubstitute;
 using Shouldly;
 using SyntriceEShop.API.ApplicationOptions;
+using SyntriceEShop.API.Models.UserModel;
 using SyntriceEShop.API.Services.UserServices;
-using SyntriceEShop.Common.Models.UserModel;
 
 namespace SyntriceEShop.Tests.API.Services.UserServices;
 

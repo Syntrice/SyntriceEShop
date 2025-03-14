@@ -4,7 +4,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
 using SyntriceEShop.API.ApplicationOptions;
-using SyntriceEShop.Common.Models.UserModel;
+using SyntriceEShop.API.Models.UserModel;
 using JwtRegisteredClaimNames = System.IdentityModel.Tokens.Jwt.JwtRegisteredClaimNames;
 
 namespace SyntriceEShop.API.Services.UserServices;

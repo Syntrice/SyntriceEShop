@@ -2,9 +2,9 @@ using Microsoft.AspNetCore.Mvc;
 using NSubstitute;
 using Shouldly;
 using SyntriceEShop.API.Controllers;
+using SyntriceEShop.API.Models.UserModel;
 using SyntriceEShop.API.Services;
 using SyntriceEShop.API.Services.UserServices;
-using SyntriceEShop.Common.Models.UserModel;
 
 namespace SyntriceEShop.Tests.API.Controllers;
 

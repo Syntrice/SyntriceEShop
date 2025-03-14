@@ -1,5 +1,5 @@
+using SyntriceEShop.API.Models.UserModel;
 using SyntriceEShop.API.Repositories;
-using SyntriceEShop.Common.Models.UserModel;
 
 namespace SyntriceEShop.API.Services.UserServices;
 

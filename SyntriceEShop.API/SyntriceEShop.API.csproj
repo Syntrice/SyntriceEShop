@@ -15,8 +15,4 @@
       <PackageReference Include="Swashbuckle.AspNetCore" Version="7.3.1" />
     </ItemGroup>
 
-    <ItemGroup>
-      <ProjectReference Include="..\SyntriceEShop.Common\SyntriceEShop.Common.csproj" />
-    </ItemGroup>
-
 </Project>
