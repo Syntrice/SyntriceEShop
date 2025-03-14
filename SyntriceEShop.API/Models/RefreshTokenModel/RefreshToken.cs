@@ -3,9 +3,9 @@ using SyntriceEShop.Common.Models;
 
 namespace SyntriceEShop.API.Models.RefreshTokenModel;
 
-public class RefreshToken : IEntity
+public class RefreshToken : IGUIDEntity
 {
-    public int Id { get; set; }
+    public Guid Id { get; set; }
     public int UserId { get; set; }
     public string Token { get; set; }
     public DateTime ExpiresOnUTC { get; set; }
