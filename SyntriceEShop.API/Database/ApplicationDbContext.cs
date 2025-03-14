@@ -11,7 +11,10 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        // configure table models
         new UserEntityTypeConfiguration().Configure(modelBuilder.Entity<User>());
         new RefreshTokenEntityTypeConfiguration().Configure(modelBuilder.Entity<RefreshToken>());
+        
+        base.OnModelCreating(modelBuilder);
     }
 }
