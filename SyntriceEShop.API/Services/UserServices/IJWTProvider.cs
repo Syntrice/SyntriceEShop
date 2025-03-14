@@ -2,7 +2,7 @@ using SyntriceEShop.Common.Models.UserModel;
 
 namespace SyntriceEShop.API.Services.UserServices;
 
-public interface ITokenProvider
+public interface IJWTProvider
 {
-    string Create(User user);
+    string GenerateToken(User user);
 }

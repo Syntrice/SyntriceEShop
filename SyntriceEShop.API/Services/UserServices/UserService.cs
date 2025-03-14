@@ -3,7 +3,7 @@ using SyntriceEShop.Common.Models.UserModel;
 
 namespace SyntriceEShop.API.Services.UserServices;
 
-public class UserService(IUserRepository userRepository, IUnitOfWork unitOfWork, IPasswordHasher passwordHasher, ITokenProvider tokenProvider)
+public class UserService(IUserRepository userRepository, IUnitOfWork unitOfWork, IPasswordHasher passwordHasher, IJWTProvider tokenProvider)
     : IUserService
 {
     public async Task<ServiceResponse> RegisterAsync(UserRegisterDTO userRegisterDTO)
@@ -48,7 +48,7 @@ public class UserService(IUserRepository userRepository, IUnitOfWork unitOfWork,
         }
         
         // Generate a JWT token using the token provider
-        string token = tokenProvider.Create(user);
+        string token = tokenProvider.GenerateToken(user);
 
         return new ServiceObjectResponse<string>() { Type = ServiceResponseType.Success, Value = token };
     }

@@ -1,9 +1,12 @@
-﻿// See https://aka.ms/new-console-template for more information
-
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using SyntriceEShop.API;
+﻿using SyntriceEShop.API;
+using SyntriceEShop.API.ApplicationOptions;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddOptions<JWTOptions>()
+    .Bind(builder.Configuration.GetSection(JWTOptions.SectionName))
+    .ValidateDataAnnotations()
+    .ValidateOnStart();
 
 builder.SetupDatabase();
 builder.SetupRepositories();
