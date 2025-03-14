@@ -56,6 +56,7 @@ public static class WebApplicationBuilderExtensions
     {
         builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
         builder.Services.AddScoped<IUserRepository, UserRepository>();
+        builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
     }
 
     public static void SetupServices(this WebApplicationBuilder builder)
