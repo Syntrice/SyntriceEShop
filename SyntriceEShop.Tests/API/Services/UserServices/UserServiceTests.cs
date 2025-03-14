@@ -154,7 +154,7 @@ public class UserServiceTests
             await _userService.LoginAsync(userLoginDTO);
 
             // Assert
-            _tokenProvider.GenerateJWT(userEntity);
+            _tokenProvider.GenerateToken(userEntity);
         }
 
         [Test]
@@ -194,7 +194,7 @@ public class UserServiceTests
             var jwtToken = "jwtToken";
             _repository.GetUserByUsernameAsync(userLoginDTO.Username).Returns(userEntity);
             _passwordHasher.Verify(userLoginDTO.Password, userEntity.PasswordHash).Returns(true);
-            _tokenProvider.GenerateJWT(userEntity).Returns(jwtToken);
+            _tokenProvider.GenerateToken(userEntity).Returns(jwtToken);
 
             // Act
             var response = await _userService.LoginAsync(userLoginDTO);

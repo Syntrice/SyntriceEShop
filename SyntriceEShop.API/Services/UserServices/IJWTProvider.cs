@@ -4,5 +4,5 @@ namespace SyntriceEShop.API.Services.UserServices;
 
 public interface IJWTProvider
 {
-    string GenerateJWT(User user);
+    string GenerateToken(User user);
 }

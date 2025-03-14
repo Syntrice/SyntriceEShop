@@ -13,7 +13,7 @@ namespace SyntriceEShop.API.Services.UserServices;
 public class JWTProvider(IOptions<JWTOptions> options) : IJWTProvider
 {
 
-    public string GenerateJWT(User user)
+    public string GenerateToken(User user)
     {
         string secretKey = options.Value.SecretKey;
 

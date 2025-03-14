@@ -48,7 +48,7 @@ public class UserService(IUserRepository userRepository, IUnitOfWork unitOfWork,
         }
         
         // Generate a JWT token using the token provider
-        string token = tokenProvider.GenerateJWT(user);
+        string token = tokenProvider.GenerateToken(user);
 
         return new ServiceObjectResponse<string>() { Type = ServiceResponseType.Success, Value = token };
     }
