@@ -14,7 +14,7 @@ public class UserServiceTests
     private IUserRepository _repository;
     private IUnitOfWork _unitOfWork;
     private IPasswordHasher _passwordHasher;
-    private ITokenProvider _tokenProvider;
+    private IJWTProvider _tokenProvider;
     private UserService _userService;
 
     [SetUp]
@@ -23,7 +23,7 @@ public class UserServiceTests
         _repository = Substitute.For<IUserRepository>();
         _unitOfWork = Substitute.For<IUnitOfWork>();
         _passwordHasher = Substitute.For<IPasswordHasher>();
-        _tokenProvider = Substitute.For<ITokenProvider>();
+        _tokenProvider = Substitute.For<IJWTProvider>();
         _userService = new UserService(_repository, _unitOfWork, _passwordHasher, _tokenProvider);
     }
     
@@ -154,7 +154,7 @@ public class UserServiceTests
             await _userService.LoginAsync(userLoginDTO);
 
             // Assert
-            _tokenProvider.Create(userEntity);
+            _tokenProvider.GenerateJWT(userEntity);
         }
 
         [Test]
@@ -194,7 +194,7 @@ public class UserServiceTests
             var jwtToken = "jwtToken";
             _repository.GetUserByUsernameAsync(userLoginDTO.Username).Returns(userEntity);
             _passwordHasher.Verify(userLoginDTO.Password, userEntity.PasswordHash).Returns(true);
-            _tokenProvider.Create(userEntity).Returns(jwtToken);
+            _tokenProvider.GenerateJWT(userEntity).Returns(jwtToken);
 
             // Act
             var response = await _userService.LoginAsync(userLoginDTO);

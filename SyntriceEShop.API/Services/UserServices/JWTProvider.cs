@@ -1,25 +1,22 @@
 using System.Security.Claims;
 using System.Text;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
+using SyntriceEShop.API.ApplicationOptions;
 using SyntriceEShop.Common.Models.UserModel;
 using JwtRegisteredClaimNames = System.IdentityModel.Tokens.Jwt.JwtRegisteredClaimNames;
 
 namespace SyntriceEShop.API.Services.UserServices;
 
-// TODO: Use options pattern for JWT configuration
 // TODO: Unit Tests
-public class TokenProvider(IConfiguration config) : ITokenProvider
+public class JWTProvider(IOptions<JWTOptions> options) : IJWTProvider
 {
-    public string Create(User user)
-    {
-        string? secretKey = config["Jwt:SecretKey"];
 
-        if (secretKey == null)
-        {
-            throw new InvalidOperationException("Jwt:SecretKey Key is missing. Please check your configuration.");
-        }
-        
+    public string GenerateJWT(User user)
+    {
+        string secretKey = options.Value.SecretKey;
+
         // Symmetric security key requires a single key for both encryption and decryption.
         var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
         
@@ -32,10 +29,10 @@ public class TokenProvider(IConfiguration config) : ITokenProvider
                 new Claim(JwtRegisteredClaimNames.Sub,user.Id.ToString()),
                 new Claim("username", user.Username)
             ]),
-            Expires = DateTime.UtcNow.AddMinutes(config.GetValue<int>("Jwt:ExpirationInMinutes")),
+            Expires = DateTime.UtcNow.AddMinutes(options.Value.ExpirationInMinutes),
             SigningCredentials = credentials,
-            Issuer = config["Jwt:Issuer"],
-            Audience = config["Jwt:Audience"]
+            Issuer = options.Value.Issuer,
+            Audience = options.Value.Audience
         };
 
         var handler = new JsonWebTokenHandler();

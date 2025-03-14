@@ -2,8 +2,10 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using SyntriceEShop.API.ApplicationOptions;
 using SyntriceEShop.API.Database;
 using SyntriceEShop.API.Repositories;
 using SyntriceEShop.API.Services;
@@ -60,18 +62,14 @@ public static class WebApplicationBuilderExtensions
     {
         builder.Services.AddScoped<IUserService, UserService>();
         builder.Services.AddSingleton<IPasswordHasher, PasswordHasher>();
-        builder.Services.AddSingleton<ITokenProvider, TokenProvider>();
+        builder.Services.AddSingleton<IJWTProvider, JWTProvider>();
     }
 
     // TODO: Use options pattern for JWT configuration
     public static void SetupAuthentication(this WebApplicationBuilder builder)
     {
-        string? jwtSecretKey = builder.Configuration["Jwt:SecretKey"];
-
-        if (string.IsNullOrEmpty(jwtSecretKey))
-        {
-            throw new InvalidOperationException("Jwt:SecretKey Key is missing. Please check your configuration.");
-        }
+        // resolve service for options
+        var jwtOptions = builder.Services.BuildServiceProvider().GetRequiredService<IOptions<JWTOptions>>();
 
         builder.Services.AddAuthorization(); // used for policy / role / permissions system
         builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme) // configure jwt 
@@ -80,17 +78,17 @@ public static class WebApplicationBuilderExtensions
                 options.RequireHttpsMetadata = false;
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
-                    ValidIssuer = builder.Configuration["Jwt:Issuer"],
+                    ValidIssuer = jwtOptions.Value.Issuer,
                     ValidateIssuer = true,
 
-                    ValidAudience = builder.Configuration["Jwt:Audience"],
+                    ValidAudience = jwtOptions.Value.Audience,
                     ValidateAudience = true,
 
                     ClockSkew = TimeSpan.Zero, // no tolerance for expiration time in the past
                     ValidateLifetime = true,
 
                     // Create a signing key using the same secret that is used for token generation
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecretKey)),
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.Value.SecretKey)),
                     ValidateIssuerSigningKey = true,
                 };
             });
