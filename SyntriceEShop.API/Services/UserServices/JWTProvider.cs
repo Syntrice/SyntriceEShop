@@ -9,7 +9,6 @@ using JwtRegisteredClaimNames = System.IdentityModel.Tokens.Jwt.JwtRegisteredCla
 
 namespace SyntriceEShop.API.Services.UserServices;
 
-// TODO: Unit Tests
 public class JWTProvider(IOptions<JWTOptions> options) : IJWTProvider
 {
 

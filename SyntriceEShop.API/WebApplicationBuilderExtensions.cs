@@ -65,7 +65,6 @@ public static class WebApplicationBuilderExtensions
         builder.Services.AddSingleton<IJWTProvider, JWTProvider>();
     }
 
-    // TODO: Use options pattern for JWT configuration
     public static void SetupAuthentication(this WebApplicationBuilder builder)
     {
         // resolve service for options
