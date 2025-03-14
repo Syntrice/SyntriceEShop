@@ -26,8 +26,12 @@ public class JWTProviderTests
     {
         return new JWTOptions()
         {
-            SecretKey = "d6bW9fMV3tCx7FAZpxc5doDpIRbWkxSk", Issuer = "automated", Audience = "test",
-            ExpirationInMinutes = 30
+            SecretKey = "d6bW9fMV3tCx7FAZpxc5doDpIRbWkxSk", 
+            Issuer = "automated", 
+            Audience = "test",
+            ExpirationInMinutes = 30,
+            RefreshTokenSize = 32,
+            RefreshTokenExpirationInDays = 7
         };
     }
     
@@ -164,6 +168,25 @@ public class JWTProviderTests
             var payloadJson = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, object>>(payload);
 
             payloadJson["aud"].ToString().ShouldBe(audience);
+        }
+    }
+
+    [TestFixture]
+    public class GenerateRefreshToken : JWTProviderTests
+    {
+        [TestCase(1234)]
+        [TestCase(1)]
+        [TestCase(1234453)]
+        public void WithUserEntity_MapsUserId(int id)
+        {
+            // Arrange
+            var user = new User() { Id = 1, Username = "username" };
+            
+            // Act
+            var refreshToken = _jwtProvider.GenerateRefreshToken(user);
+            
+            // Assert
+            refreshToken.UserId.ShouldBe(user.Id);
         }
     }
 }
