@@ -28,7 +28,7 @@ public class UserControllerTests
         public async Task CallsUserService_RegisterAsync_WithUserRegisterDTO()
         {
             // Arrange
-            var userRegisterDTO = new UserRegisterDTO() { Username = "username", Password = "password" };
+            var userRegisterDTO = new UserRegisterRequestDTO() { Username = "username", Password = "password" };
             _userService.RegisterAsync(userRegisterDTO).Returns(new ServiceResponse());
         
             // Act
@@ -42,7 +42,7 @@ public class UserControllerTests
         public async Task WhenUserService_RegisterAsyncReturnsSuccess_ReturnOkResult()
         {
             // Arrange
-            var userRegisterDTO = new UserRegisterDTO() { Username = "username", Password = "password" };
+            var userRegisterDTO = new UserRegisterRequestDTO() { Username = "username", Password = "password" };
             _userService.RegisterAsync(userRegisterDTO).Returns(new ServiceResponse() {Type = ServiceResponseType.Success});
         
             // Act
@@ -56,7 +56,7 @@ public class UserControllerTests
         public async Task WhenUserService_RegisterAsyncReturnsConflict_ReturnsConflictObjectResult()
         {
             // Arrange
-            var userRegisterDTO = new UserRegisterDTO() { Username = "username", Password = "password" };
+            var userRegisterDTO = new UserRegisterRequestDTO() { Username = "username", Password = "password" };
             _userService.RegisterAsync(userRegisterDTO).Returns(new ServiceResponse() {Type = ServiceResponseType.Conflict});
         
             // Act
@@ -74,8 +74,8 @@ public class UserControllerTests
         public async Task CallsUserService_LoginAsync_WithUseLoginDTO()
         {
             // Arrange
-            var userLoginDTO = new UserLoginDTO() { Username = "username", Password = "password" };
-            _userService.LoginAsync(userLoginDTO).Returns(new ServiceObjectResponse<string>());
+            var userLoginDTO = new UserLoginRequestDTO() { Username = "username", Password = "password" };
+            _userService.LoginAsync(userLoginDTO).Returns(new ServiceObjectResponse<UserLoginResponseDTO>());
         
             // Act
             await _userController.LoginAsync(userLoginDTO);
@@ -88,8 +88,9 @@ public class UserControllerTests
         public async Task WhenUserService_LoginAsyncReturnsSuccess_ReturnOkObjectResultWithToken()
         {
             // Arrange
-            var userLoginDTO = new UserLoginDTO() { Username = "username", Password = "password" };
-            var serviceResponse = new ServiceObjectResponse<string>() {Type = ServiceResponseType.Success, Value = "token"};
+            var userLoginDTO = new UserLoginRequestDTO() { Username = "username", Password = "password" };
+            var userLoginResponseDTO = new UserLoginResponseDTO() { AccessToken = "token", RefreshToken = "refreshToken" };
+            var serviceResponse = new ServiceObjectResponse<UserLoginResponseDTO>() {Type = ServiceResponseType.Success, Value = userLoginResponseDTO};
             _userService.LoginAsync(userLoginDTO).Returns(serviceResponse);
         
             // Act
@@ -97,16 +98,16 @@ public class UserControllerTests
         
             // Assert
             response.ShouldBeOfType(typeof(OkObjectResult));
-            var responseValue = (response as OkObjectResult)?.Value as string;
-            responseValue.ShouldBe("token");
+            var responseValue = (response as OkObjectResult)?.Value as UserLoginResponseDTO;
+            responseValue.ShouldBe(userLoginResponseDTO);
         }
         
         [Test]
         public async Task WhenUserService_LoginAsyncReturnsNotFound_ReturnNotFoundObjectResult()
         {
             // Arrange
-            var userLoginDTO = new UserLoginDTO() { Username = "username", Password = "password" };
-            var serviceResponse = new ServiceObjectResponse<string>() {Type = ServiceResponseType.NotFound};
+            var userLoginDTO = new UserLoginRequestDTO() { Username = "username", Password = "password" };
+            var serviceResponse = new ServiceObjectResponse<UserLoginResponseDTO>() {Type = ServiceResponseType.NotFound};
             _userService.LoginAsync(userLoginDTO).Returns(serviceResponse);
         
             // Act
@@ -120,8 +121,8 @@ public class UserControllerTests
         public async Task WhenUserService_LoginAsyncReturnsInvalidCredentials_ReturnUnauthorizedObjectResult()
         {
             // Arrange
-            var userLoginDTO = new UserLoginDTO() { Username = "username", Password = "password" };
-            var serviceResponse = new ServiceObjectResponse<string>() {Type = ServiceResponseType.InvalidCredentials};
+            var userLoginDTO = new UserLoginRequestDTO() { Username = "username", Password = "password" };
+            var serviceResponse = new ServiceObjectResponse<UserLoginResponseDTO>() {Type = ServiceResponseType.InvalidCredentials};
             _userService.LoginAsync(userLoginDTO).Returns(serviceResponse);
         
             // Act

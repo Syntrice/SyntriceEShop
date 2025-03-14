@@ -12,9 +12,9 @@ public class UserController(IUserService userService) : ControllerBase, IUserCon
 {
     [HttpPost]
     [Route("register")]
-    public async Task<IActionResult> RegisterAsync([FromBody] UserRegisterDTO userRegisterDTO)
+    public async Task<IActionResult> RegisterAsync([FromBody] UserRegisterRequestDTO userRegisterRequestDto)
     {
-        var result = await userService.RegisterAsync(userRegisterDTO);
+        var result = await userService.RegisterAsync(userRegisterRequestDto);
 
         switch (result.Type)
         {
@@ -29,9 +29,9 @@ public class UserController(IUserService userService) : ControllerBase, IUserCon
 
     [HttpPost]
     [Route("login")]
-    public async Task<IActionResult> LoginAsync([FromBody] UserLoginDTO userLoginDTO)
+    public async Task<IActionResult> LoginAsync([FromBody] UserLoginRequestDTO userLoginRequestDto)
     {
-        var result = await userService.LoginAsync(userLoginDTO);
+        var result = await userService.LoginAsync(userLoginRequestDto);
         
         switch (result.Type)
         {

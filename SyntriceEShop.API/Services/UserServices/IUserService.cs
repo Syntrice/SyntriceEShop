@@ -4,6 +4,6 @@ namespace SyntriceEShop.API.Services.UserServices;
 
 public interface IUserService
 {
-    Task<ServiceResponse> RegisterAsync(UserRegisterDTO userRegisterDTO);
-    Task<ServiceObjectResponse<string>> LoginAsync(UserLoginDTO userLoginDTO);
+    Task<ServiceResponse> RegisterAsync(UserRegisterRequestDTO userRegisterRequestDto);
+    Task<ServiceObjectResponse<UserLoginResponseDTO>> LoginAsync(UserLoginRequestDTO userLoginRequestDto);
 }

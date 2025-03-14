@@ -16,6 +16,7 @@ public class UserServiceTests
     private IPasswordHasher _passwordHasher;
     private IJWTProvider _tokenProvider;
     private UserService _userService;
+    private IRefreshTokenRepository _refreshTokenRepository;
 
     [SetUp]
     public void Setup()
@@ -24,7 +25,8 @@ public class UserServiceTests
         _unitOfWork = Substitute.For<IUnitOfWork>();
         _passwordHasher = Substitute.For<IPasswordHasher>();
         _tokenProvider = Substitute.For<IJWTProvider>();
-        _userService = new UserService(_repository, _unitOfWork, _passwordHasher, _tokenProvider);
+        _refreshTokenRepository = Substitute.For<IRefreshTokenRepository>();
+        _userService = new UserService(_repository, _refreshTokenRepository, _unitOfWork, _passwordHasher, _tokenProvider);
     }
     
     [TestFixture]
@@ -34,7 +36,7 @@ public class UserServiceTests
         public async Task CallsUnitOfWork_SaveChangesAsync()
         {
             // Arrange
-            var userRegisterDTO = new UserRegisterDTO() { Username = "username", Password = "password" };
+            var userRegisterDTO = new UserRegisterRequestDTO() { Username = "username", Password = "password" };
 
             // Act
             await _userService.RegisterAsync(userRegisterDTO);
@@ -47,7 +49,7 @@ public class UserServiceTests
         public async Task CallsRepository_Add()
         {
             // Arrange
-            var userRegisterDTO = new UserRegisterDTO() { Username = "username", Password = "password" };
+            var userRegisterDTO = new UserRegisterRequestDTO() { Username = "username", Password = "password" };
 
             // Act
             await _userService.RegisterAsync(userRegisterDTO);
@@ -60,7 +62,7 @@ public class UserServiceTests
         public async Task CallsPasswordHasher_Hash_WithRegisterPassword()
         {
             // Arrange
-            var userRegisterDTO = new UserRegisterDTO() { Username = "username", Password = "password" };
+            var userRegisterDTO = new UserRegisterRequestDTO() { Username = "username", Password = "password" };
 
             // Act
             await _userService.RegisterAsync(userRegisterDTO);
@@ -73,7 +75,7 @@ public class UserServiceTests
         public async Task CallsRepository_UsernameExistsAsync()
         {
             // Arrange
-            var userRegisterDTO = new UserRegisterDTO() { Username = "username", Password = "password" };
+            var userRegisterDTO = new UserRegisterRequestDTO() { Username = "username", Password = "password" };
 
             // Act
             await _userService.RegisterAsync(userRegisterDTO);
@@ -86,7 +88,7 @@ public class UserServiceTests
         public async Task WhenRepositoryUsernameExists_ReturnsConflictResponseType()
         {
             // Arrange
-            var userRegisterDTO = new UserRegisterDTO() { Username = "username", Password = "password" };
+            var userRegisterDTO = new UserRegisterRequestDTO() { Username = "username", Password = "password" };
             _repository.UsernameExistsAsync(userRegisterDTO.Username).Returns(true);
 
             // Act
@@ -100,7 +102,7 @@ public class UserServiceTests
         public async Task WhenRepositoryUsernameDoesNotExist_ReturnsSuccessResponseType()
         {
             // Arrange
-            var userRegisterDTO = new UserRegisterDTO() { Username = "username", Password = "password" };
+            var userRegisterDTO = new UserRegisterRequestDTO() { Username = "username", Password = "password" };
             _repository.UsernameExistsAsync(userRegisterDTO.Username).Returns(false);
 
             // Act
@@ -118,7 +120,7 @@ public class UserServiceTests
         public async Task CallsRepository_GetUserByUsernameAsync_WithCorrectParameters()
         {
             // Arrange
-            var userLoginDTO = new UserLoginDTO() { Username = "username", Password = "password" };
+            var userLoginDTO = new UserLoginRequestDTO() { Username = "username", Password = "password" };
 
             // Act
             await _userService.LoginAsync(userLoginDTO);
@@ -131,7 +133,7 @@ public class UserServiceTests
         public async Task CallsPasswordHasher_Verify_WithCorrectParameters()
         {
             // Arrange
-            var userLoginDTO = new UserLoginDTO() { Username = "username", Password = "password" };
+            var userLoginDTO = new UserLoginRequestDTO() { Username = "username", Password = "password" };
             var userEntity = new User() { Username = "username", PasswordHash = "hashedpassword" };
             _repository.GetUserByUsernameAsync(userLoginDTO.Username).Returns(userEntity);
 
@@ -146,7 +148,7 @@ public class UserServiceTests
         public async Task CallsTokenProvider_Create_WithUserEntity()
         {
             // Arrange
-            var userLoginDTO = new UserLoginDTO() { Username = "username", Password = "password" };
+            var userLoginDTO = new UserLoginRequestDTO() { Username = "username", Password = "password" };
             var userEntity = new User() { Username = "username", PasswordHash = "hashedpassword" };
             _repository.GetUserByUsernameAsync(userLoginDTO.Username).Returns(userEntity);
 
@@ -161,7 +163,7 @@ public class UserServiceTests
         public async Task WhenRepository_GetByUsernameReturnsNull_ReturnsNotFoundResponseType()
         {
             // Arrange
-            var userLoginDTO = new UserLoginDTO() { Username = "username", Password = "password" };
+            var userLoginDTO = new UserLoginRequestDTO() { Username = "username", Password = "password" };
             _repository.GetUserByUsernameAsync(userLoginDTO.Username).ReturnsNull();
 
             // Act
@@ -175,7 +177,7 @@ public class UserServiceTests
         public async Task WhenPasswordHasher_VerifyReturnsFalse_ReturnsInvalidCredentialsResponseType()
         {
             // Arrange
-            var userLoginDTO = new UserLoginDTO() { Username = "username", Password = "password" };
+            var userLoginDTO = new UserLoginRequestDTO() { Username = "username", Password = "password" };
             _repository.GetUserByUsernameAsync(userLoginDTO.Username).ReturnsNull();
 
             // Act
@@ -189,7 +191,7 @@ public class UserServiceTests
         public async Task WhenAllChecksPass_ReturnsSuccessResponseTypeWithJwtToken()
         {
             // Arrange
-            var userLoginDTO = new UserLoginDTO() { Username = "username", Password = "password" };
+            var userLoginDTO = new UserLoginRequestDTO() { Username = "username", Password = "password" };
             var userEntity = new User() { Username = "username", PasswordHash = "hashedpassword" };
             var jwtToken = "jwtToken";
             _repository.GetUserByUsernameAsync(userLoginDTO.Username).Returns(userEntity);
@@ -201,7 +203,7 @@ public class UserServiceTests
 
             // Assert
             response.Type.ShouldBe(ServiceResponseType.Success);
-            response.Value.ShouldBe(jwtToken);
+            response.Value.AccessToken.ShouldBe(jwtToken);
         }
     }
 }
