@@ -44,7 +44,9 @@ public class UserService(
         if (user == null)
         {
             return new ServiceObjectResponse<UserLoginResponseDTO>()
-                { Type = ServiceResponseType.NotFound, Message = $"User {userLoginRequestDto.Username} does not exist." };
+            {
+                Type = ServiceResponseType.NotFound, Message = $"User {userLoginRequestDto.Username} does not exist."
+            };
         }
 
         bool verified = passwordHasher.Verify(userLoginRequestDto.Password, user.PasswordHash);
@@ -57,7 +59,7 @@ public class UserService(
 
         // Generate a JWT token using the token provider
         string token = tokenProvider.GenerateToken(user);
-        
+
         // Generate a Refresh token for the user and save to repository
         RefreshToken refreshToken = tokenProvider.GenerateRefreshToken(user);
         refreshTokenRepository.Add(refreshToken);
@@ -68,6 +70,38 @@ public class UserService(
             AccessToken = token,
             RefreshToken = refreshToken.Token
         };
-        return new ServiceObjectResponse<UserLoginResponseDTO>() { Type = ServiceResponseType.Success, Value = userLoginResponseDto };
+        return new ServiceObjectResponse<UserLoginResponseDTO>()
+            { Type = ServiceResponseType.Success, Value = userLoginResponseDto };
+    }
+
+    public async Task<ServiceObjectResponse<UserRefreshResponseDTO>> RefreshAsync(
+        UserRefreshRequestDTO userRefreshRequestDto)
+    {
+        // Check if the refresh token is valid
+        RefreshToken? refreshToken = await refreshTokenRepository.GetByTokenValue(userRefreshRequestDto.RefreshToken);
+
+        if (refreshToken == null || refreshToken.ExpiresOnUTC < DateTime.UtcNow)
+        {
+            return new ServiceObjectResponse<UserRefreshResponseDTO>()
+            {
+                Type = ServiceResponseType.InvalidCredentials,
+                Message = "The refresh token is not valid or has expired."
+            };
+        }
+
+        // Generate a new access token
+        string accessToken = tokenProvider.GenerateToken(refreshToken.User);
+
+        // Update the refresh token
+        refreshToken = tokenProvider.UpdateRefreshToken(refreshToken);
+        await unitOfWork.SaveChangesAsync();
+
+        UserRefreshResponseDTO userRefreshResponseDto = new UserRefreshResponseDTO()
+        {
+            AccessToken = accessToken,
+            RefreshToken = refreshToken.Token
+        };
+        return new ServiceObjectResponse<UserRefreshResponseDTO>()
+            { Type = ServiceResponseType.Success, Value = userRefreshResponseDto };
     }
 }

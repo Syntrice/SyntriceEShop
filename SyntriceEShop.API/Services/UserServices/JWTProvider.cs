@@ -53,4 +53,11 @@ public class JWTProvider(IOptions<JWTOptions> options) : IJWTProvider
         };
         return refreshToken;
     }
+
+    public RefreshToken UpdateRefreshToken(RefreshToken refreshToken)
+    {
+        refreshToken.Token = Convert.ToBase64String(RandomNumberGenerator.GetBytes(options.Value.RefreshTokenSize));
+        refreshToken.ExpiresOnUTC = DateTime.UtcNow.AddDays(options.Value.RefreshTokenExpirationInDays);
+        return refreshToken;
+    }
 }

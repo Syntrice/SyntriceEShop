@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using SyntriceEShop.API.Database;
 using SyntriceEShop.API.Models.RefreshTokenModel;
 
@@ -9,5 +10,10 @@ public class RefreshTokenRepository(ApplicationDbContext db) : IRefreshTokenRepo
     {
         var entry = db.RefreshTokens.Add(token);
         return entry.Entity;
+    }
+
+    public async Task<RefreshToken?> GetByTokenValue(string token)
+    {
+        return await db.RefreshTokens.Include(e => e.User).FirstOrDefaultAsync(e => e.Token == token);
     }
 }

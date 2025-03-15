@@ -3,6 +3,7 @@ using Microsoft.Extensions.Options;
 using NSubstitute;
 using Shouldly;
 using SyntriceEShop.API.ApplicationOptions;
+using SyntriceEShop.API.Models.RefreshTokenModel;
 using SyntriceEShop.API.Models.UserModel;
 using SyntriceEShop.API.Services.UserServices;
 
@@ -187,6 +188,71 @@ public class JWTProviderTests
             
             // Assert
             refreshToken.UserId.ShouldBe(user.Id);
+        }
+    }
+    
+    [TestFixture]
+    public class UpdateRefreshToken : JWTProviderTests
+    {
+        [TestCase(1234)]
+        [TestCase(1)]
+        [TestCase(1234453)]
+        public void UpdatesAndReturnsToken_WithSameUserId(int id)
+        {
+            // Arrange
+            var refreshToken = new RefreshToken() { Id = Guid.NewGuid(), UserId = id, Token = "token", ExpiresOnUTC = DateTime.UtcNow };
+            
+            // Act
+            var returnedRefreshToken = _jwtProvider.UpdateRefreshToken(refreshToken);
+            
+            // Assert
+            refreshToken.UserId.ShouldBe(id);
+            returnedRefreshToken.UserId.ShouldBe(id);
+        }
+        
+        [Test]
+        public void UpdatesAndReturnsToken_WithSameId()
+        {
+            // Arrange
+            var initialId = Guid.NewGuid();
+            var refreshToken = new RefreshToken() { Id = initialId, UserId = 1, Token = "token", ExpiresOnUTC = DateTime.UtcNow };
+            
+            // Act
+            var returnedRefreshToken = _jwtProvider.UpdateRefreshToken(refreshToken);
+            
+            // Assert
+            returnedRefreshToken.Id.ShouldBeEquivalentTo(initialId);
+            refreshToken.Id.ShouldBeEquivalentTo(initialId);
+        }
+        
+        [Test]
+        public void UpdatesAndReturnsToken_WithNewToken()
+        {
+            // Arrange
+            string initialToken = "token";
+            var refreshToken = new RefreshToken() { Id = Guid.NewGuid(), UserId = 1, Token = initialToken, ExpiresOnUTC = DateTime.UtcNow };
+            
+            // Act
+            var returnedRefreshToken = _jwtProvider.UpdateRefreshToken(refreshToken);
+            
+            // Assert
+            returnedRefreshToken.Token.ShouldNotBeSameAs(initialToken);
+            refreshToken.Token.ShouldNotBeSameAs(initialToken);
+        }
+        
+        [Test]
+        public void UpdatesAndReturnsToken_WithNewExpirationDate()
+        {
+            // Arrange
+            var initialExpirationDate = DateTime.UtcNow;
+            var refreshToken = new RefreshToken() { Id = Guid.NewGuid(), UserId = 1, Token = "token", ExpiresOnUTC = initialExpirationDate };
+            
+            // Act
+            var returnedRefreshToken = _jwtProvider.UpdateRefreshToken(refreshToken);
+            
+            // Assert
+            refreshToken.ExpiresOnUTC.ShouldNotBeSameAs(initialExpirationDate);
+            returnedRefreshToken.ExpiresOnUTC.ShouldNotBeSameAs(initialExpirationDate);
         }
     }
 }

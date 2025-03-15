@@ -7,4 +7,5 @@ public interface IJWTProvider
 {
     string GenerateToken(User user);
     RefreshToken GenerateRefreshToken(User user);
+    RefreshToken UpdateRefreshToken(RefreshToken refreshToken);
 }
