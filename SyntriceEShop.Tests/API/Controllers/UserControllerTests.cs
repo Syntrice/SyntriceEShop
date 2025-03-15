@@ -85,7 +85,7 @@ public class UserControllerTests
         }
         
         [Test]
-        public async Task WhenUserService_LoginAsyncReturnsSuccess_ReturnOkObjectResultWithToken()
+        public async Task WhenUserService_LoginAsyncReturnsSuccess_ReturnOkObjectResultWithTokens()
         {
             // Arrange
             var userLoginDTO = new UserLoginRequestDTO() { Username = "username", Password = "password" };
@@ -130,6 +130,60 @@ public class UserControllerTests
         
             // Assert
             response.ShouldBeOfType(typeof(UnauthorizedObjectResult));
+        }
+    }
+
+    [TestFixture]
+    public class RefreshAsync : UserControllerTests
+    {
+        [Test]
+        public async Task CallsUserService_RefreshAsync_WithUserRefreshRequestDTO()
+        {
+            // Arrange
+            var userRefreshRequestDto = new UserRefreshRequestDTO() { RefreshToken = "refreshToken" };
+            var response = new ServiceObjectResponse<UserRefreshResponseDTO>();
+            _userService.RefreshAsync(userRefreshRequestDto).Returns(response);
+
+            // Act
+            await _userController.RefreshAsync(userRefreshRequestDto);
+
+            // Assert
+            await _userService.Received(1).RefreshAsync(userRefreshRequestDto);
+        }
+
+        [Test]
+        public async Task WhenUserService_RefreshAsyncReturnsInvalidCredentials_ReturnUnauthorizedObjectResult()
+        {
+            // Arrange
+            var userRefreshRequestDto = new UserRefreshRequestDTO() { RefreshToken = "refreshToken" };
+            var response = new ServiceObjectResponse<UserRefreshResponseDTO>()
+                { Type = ServiceResponseType.InvalidCredentials };
+            _userService.RefreshAsync(userRefreshRequestDto).Returns(response);
+
+            // Act
+            var result = await _userController.RefreshAsync(userRefreshRequestDto);
+
+            // Assert
+            result.ShouldBeOfType(typeof(UnauthorizedObjectResult));
+        }
+
+        [Test]
+        public async Task WhenUserService_RefreshAsyncReturnsSuccess_ReturnOkObjectResultWithTokens()
+        {
+            // Arrange
+            var refreshRequestDTO = new UserRefreshRequestDTO() { RefreshToken = "refreshToken" };
+            var userRefreshResponseDTO = new UserRefreshResponseDTO() { AccessToken = "token", RefreshToken = "refreshToken" };
+            var response = new ServiceObjectResponse<UserRefreshResponseDTO>()
+                { Type = ServiceResponseType.Success, Value = userRefreshResponseDTO};
+            _userService.RefreshAsync(refreshRequestDTO).Returns(response);
+
+            // Act
+            var result = await _userController.RefreshAsync(refreshRequestDTO);
+
+            // Assert
+            result.ShouldBeOfType(typeof(OkObjectResult));
+            var resultValue = (result as OkObjectResult)?.Value as UserRefreshResponseDTO;
+            resultValue.ShouldBe(userRefreshResponseDTO);
         }
     }
 

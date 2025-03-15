@@ -6,4 +6,7 @@ public interface IUserService
 {
     Task<ServiceResponse> RegisterAsync(UserRegisterRequestDTO userRegisterRequestDto);
     Task<ServiceObjectResponse<UserLoginResponseDTO>> LoginAsync(UserLoginRequestDTO userLoginRequestDto);
+
+    Task<ServiceObjectResponse<UserRefreshResponseDTO>> RefreshAsync(
+        UserRefreshRequestDTO userRefreshRequestDto);
 }

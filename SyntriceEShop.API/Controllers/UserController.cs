@@ -46,11 +46,20 @@ public class UserController(IUserService userService) : ControllerBase, IUserCon
         }
     }
 
-    [HttpGet]
-    [Authorize]
-    [Route("testAuth")]
-    public IActionResult TestAuth()
+    [HttpPost]
+    [Route("refresh")]
+    public async Task<IActionResult> RefreshAsync([FromBody] UserRefreshRequestDTO userRefreshRequestDto)
     {
-        return Ok("You are authenticated!");
+        var result = await userService.RefreshAsync(userRefreshRequestDto);
+        
+        switch (result.Type)
+        {
+            case ServiceResponseType.Success:
+                return Ok(result.Value);
+            case ServiceResponseType.InvalidCredentials:
+                return Unauthorized(result.Message);
+            default:
+                return StatusCode(500); // Fallback response
+        }
     }
 }

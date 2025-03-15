@@ -8,4 +8,6 @@ public interface IUserController
 {
     Task<IActionResult> RegisterAsync([FromBody] UserRegisterRequestDTO userRegisterRequestDto);
     Task<IActionResult> LoginAsync([FromBody] UserLoginRequestDTO userLoginRequestDto);
+
+    Task<IActionResult> RefreshAsync([FromBody] UserRefreshRequestDTO userRefreshRequestDto);
 }
