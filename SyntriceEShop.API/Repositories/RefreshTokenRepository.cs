@@ -16,4 +16,10 @@ public class RefreshTokenRepository(ApplicationDbContext db) : IRefreshTokenRepo
     {
         return await db.RefreshTokens.Include(e => e.User).FirstOrDefaultAsync(e => e.Token == token);
     }
+    
+    public async Task RemoveAllByUserIdAsync(int userId)
+    {
+        var refreshTokens = await db.RefreshTokens.Where(e => e.UserId == userId).ToListAsync();
+        db.RefreshTokens.RemoveRange(refreshTokens);
+    }
 }

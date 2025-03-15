@@ -363,4 +363,34 @@ public class UserServiceTests
             result.Value.AccessToken.ShouldBe(updatedAccessToken);
         }
     }
+
+    [TestFixture]
+    public class RevokeRefreshTokensAsync : UserServiceTests
+    {
+        [Test]
+        public async Task CallsRefreshTokenRepository_RemoveAllByUserIdAsync_WithInputUserId()
+        {
+            // Arrange
+            var userId = 1;
+            
+            // Act
+            var result = await _userService.RevokeRefreshTokensAsync(userId);
+            
+            // Assert
+            await _refreshTokenRepository.Received(1).RemoveAllByUserIdAsync(userId);
+        }
+        
+        [Test]
+        public async Task CallsUnitOfWork_SaveChangesAsync()
+        {
+            // Arrange
+            var userId = 1;
+            
+            // Act
+            var result = await _userService.RevokeRefreshTokensAsync(userId);
+            
+            // Assert
+            await _unitOfWork.Received(1).SaveChangesAsync();
+        }
+    }
 }

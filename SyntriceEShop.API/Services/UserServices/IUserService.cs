@@ -9,4 +9,6 @@ public interface IUserService
 
     Task<ServiceObjectResponse<UserRefreshResponseDTO>> RefreshAsync(
         UserRefreshRequestDTO userRefreshRequestDto);
+
+    Task<ServiceResponse> RevokeRefreshTokensAsync(int userId);
 }

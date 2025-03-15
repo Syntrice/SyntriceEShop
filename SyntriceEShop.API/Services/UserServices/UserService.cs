@@ -104,4 +104,12 @@ public class UserService(
         return new ServiceObjectResponse<UserRefreshResponseDTO>()
             { Type = ServiceResponseType.Success, Value = userRefreshResponseDto };
     }
+
+    // TODO: Unit test
+    public async Task<ServiceResponse> RevokeRefreshTokensAsync(int userId)
+    {
+        await refreshTokenRepository.RemoveAllByUserIdAsync(userId);
+        await unitOfWork.SaveChangesAsync();
+        return new ServiceResponse() { Type = ServiceResponseType.Success };
+    }
 }
