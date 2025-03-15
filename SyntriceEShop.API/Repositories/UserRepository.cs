@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using SyntriceEShop.API.Database;
-using SyntriceEShop.Common.Models.UserModel;
+using SyntriceEShop.API.Models.UserModel;
 
 namespace SyntriceEShop.API.Repositories;
 

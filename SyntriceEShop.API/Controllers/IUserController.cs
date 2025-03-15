@@ -1,11 +1,13 @@
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using SyntriceEShop.Common.Models.UserModel;
+using SyntriceEShop.API.Models.UserModel;
 
 namespace SyntriceEShop.API.Controllers;
 
 public interface IUserController
 {
-    Task<IActionResult> RegisterAsync([FromBody] UserRegisterDTO userRegisterDTO);
-    Task<IActionResult> LoginAsync([FromBody] UserLoginDTO userLoginDTO);
+    Task<IActionResult> RegisterAsync([FromBody] UserRegisterRequestDTO userRegisterRequestDto);
+    Task<IActionResult> LoginAsync([FromBody] UserLoginRequestDTO userLoginRequestDto);
+
+    Task<IActionResult> RefreshAsync([FromBody] UserRefreshRequestDTO userRefreshRequestDto);
 }

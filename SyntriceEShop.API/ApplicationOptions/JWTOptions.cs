@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Runtime.InteropServices;
 
 namespace SyntriceEShop.API.ApplicationOptions;
 
@@ -21,4 +22,10 @@ public class JWTOptions
     [Required] 
     [Range(1, int.MaxValue)]
     public int ExpirationInMinutes { get; set; } = 0;
+    
+    [Required]
+    [Range(1, int.MaxValue)]
+    public int RefreshTokenExpirationInDays { get; set; } = 0;
+    
+    public int RefreshTokenSize { get; set; } = 32;
 }

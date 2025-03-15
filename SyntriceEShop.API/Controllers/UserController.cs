@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SyntriceEShop.API.Models.UserModel;
 using SyntriceEShop.API.Services;
 using SyntriceEShop.API.Services.UserServices;
-using SyntriceEShop.Common.Models.UserModel;
 
 namespace SyntriceEShop.API.Controllers;
 
@@ -12,9 +12,9 @@ public class UserController(IUserService userService) : ControllerBase, IUserCon
 {
     [HttpPost]
     [Route("register")]
-    public async Task<IActionResult> RegisterAsync([FromBody] UserRegisterDTO userRegisterDTO)
+    public async Task<IActionResult> RegisterAsync([FromBody] UserRegisterRequestDTO userRegisterRequestDto)
     {
-        var result = await userService.RegisterAsync(userRegisterDTO);
+        var result = await userService.RegisterAsync(userRegisterRequestDto);
 
         switch (result.Type)
         {
@@ -29,9 +29,9 @@ public class UserController(IUserService userService) : ControllerBase, IUserCon
 
     [HttpPost]
     [Route("login")]
-    public async Task<IActionResult> LoginAsync([FromBody] UserLoginDTO userLoginDTO)
+    public async Task<IActionResult> LoginAsync([FromBody] UserLoginRequestDTO userLoginRequestDto)
     {
-        var result = await userService.LoginAsync(userLoginDTO);
+        var result = await userService.LoginAsync(userLoginRequestDto);
         
         switch (result.Type)
         {
@@ -46,11 +46,20 @@ public class UserController(IUserService userService) : ControllerBase, IUserCon
         }
     }
 
-    [HttpGet]
-    [Authorize]
-    [Route("testAuth")]
-    public IActionResult TestAuth()
+    [HttpPost]
+    [Route("refresh")]
+    public async Task<IActionResult> RefreshAsync([FromBody] UserRefreshRequestDTO userRefreshRequestDto)
     {
-        return Ok("You are authenticated!");
+        var result = await userService.RefreshAsync(userRefreshRequestDto);
+        
+        switch (result.Type)
+        {
+            case ServiceResponseType.Success:
+                return Ok(result.Value);
+            case ServiceResponseType.InvalidCredentials:
+                return Unauthorized(result.Message);
+            default:
+                return StatusCode(500); // Fallback response
+        }
     }
 }
