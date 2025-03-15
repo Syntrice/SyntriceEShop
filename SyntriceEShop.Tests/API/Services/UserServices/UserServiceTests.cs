@@ -1,6 +1,7 @@
 using NSubstitute;
 using NSubstitute.ReturnsExtensions;
 using Shouldly;
+using SyntriceEShop.API.Models.RefreshTokenModel;
 using SyntriceEShop.API.Models.UserModel;
 using SyntriceEShop.API.Repositories;
 using SyntriceEShop.API.Services;
@@ -145,18 +146,40 @@ public class UserServiceTests
         }
 
         [Test]
-        public async Task CallsTokenProvider_Create_WithUserEntity()
+        public async Task CallsTokenProvider_GenerateToken_WithUserEntity()
         {
             // Arrange
             var userLoginDTO = new UserLoginRequestDTO() { Username = "username", Password = "password" };
             var userEntity = new User() { Username = "username", PasswordHash = "hashedpassword" };
             _repository.GetUserByUsernameAsync(userLoginDTO.Username).Returns(userEntity);
+            _passwordHasher.Verify(userLoginDTO.Password, userEntity.PasswordHash).Returns(true);
+            _tokenProvider.GenerateToken(userEntity).Returns("token");
+            _tokenProvider.GenerateRefreshToken(userEntity).Returns(new RefreshToken());
 
             // Act
             await _userService.LoginAsync(userLoginDTO);
 
             // Assert
-            _tokenProvider.GenerateToken(userEntity);
+            _tokenProvider.Received(1).GenerateToken(userEntity);
+        }
+        
+        [Test]
+        public async Task CallsTokenProvider_GenerateRefreshToken_WithUserEntity()
+        {
+            // Arrange
+            var userLoginDTO = new UserLoginRequestDTO() { Username = "username", Password = "password" };
+            var userEntity = new User() { Username = "username", PasswordHash = "hashedpassword" };
+            _repository.GetUserByUsernameAsync(userLoginDTO.Username).Returns(userEntity);
+            _passwordHasher.Verify(userLoginDTO.Password, userEntity.PasswordHash).Returns(true);
+            _tokenProvider.GenerateToken(userEntity).Returns("token");
+            _tokenProvider.GenerateRefreshToken(userEntity).Returns(new RefreshToken());
+            
+            // Act
+            await _userService.LoginAsync(userLoginDTO);
+
+            // Assert
+            _tokenProvider.Received(1).GenerateRefreshToken(userEntity);
+
         }
 
         [Test]
@@ -197,6 +220,7 @@ public class UserServiceTests
             _repository.GetUserByUsernameAsync(userLoginDTO.Username).Returns(userEntity);
             _passwordHasher.Verify(userLoginDTO.Password, userEntity.PasswordHash).Returns(true);
             _tokenProvider.GenerateToken(userEntity).Returns(jwtToken);
+            _tokenProvider.GenerateRefreshToken(userEntity).Returns(new RefreshToken());
 
             // Act
             var response = await _userService.LoginAsync(userLoginDTO);
@@ -204,6 +228,31 @@ public class UserServiceTests
             // Assert
             response.Type.ShouldBe(ServiceResponseType.Success);
             response.Value.AccessToken.ShouldBe(jwtToken);
+        }
+        
+        [Test]
+        public async Task WhenAllChecksPass_ReturnsSuccessResponseTypeWithRefreshToken()
+        {
+            // Arrange
+            var userLoginDTO = new UserLoginRequestDTO() { Username = "username", Password = "password" };
+            var userEntity = new User() { Id = 1, Username = "username", PasswordHash = "hashedpassword" };
+            var refreshToken = new RefreshToken()
+            {
+                Id = Guid.Empty,
+                Token = "refreshToken",
+                UserId = 1,
+                ExpiresOnUTC = DateTime.UtcNow,
+            };
+            _repository.GetUserByUsernameAsync(userLoginDTO.Username).Returns(userEntity);
+            _passwordHasher.Verify(userLoginDTO.Password, userEntity.PasswordHash).Returns(true);
+            _tokenProvider.GenerateRefreshToken(userEntity).Returns(refreshToken);
+
+            // Act
+            var response = await _userService.LoginAsync(userLoginDTO);
+
+            // Assert
+            response.Type.ShouldBe(ServiceResponseType.Success);
+            response.Value.RefreshToken.ShouldBe(refreshToken.Token);
         }
     }
 }

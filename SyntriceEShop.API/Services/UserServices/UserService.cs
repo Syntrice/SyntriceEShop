@@ -1,3 +1,4 @@
+using SyntriceEShop.API.Models.RefreshTokenModel;
 using SyntriceEShop.API.Models.UserModel;
 using SyntriceEShop.API.Repositories;
 
@@ -56,10 +57,16 @@ public class UserService(
 
         // Generate a JWT token using the token provider
         string token = tokenProvider.GenerateToken(user);
+        
+        // Generate a Refresh token for the user and save to repository
+        RefreshToken refreshToken = tokenProvider.GenerateRefreshToken(user);
+        refreshTokenRepository.Add(refreshToken);
+        await unitOfWork.SaveChangesAsync();
 
         UserLoginResponseDTO userLoginResponseDto = new UserLoginResponseDTO()
         {
-            AccessToken = token
+            AccessToken = token,
+            RefreshToken = refreshToken.Token
         };
         return new ServiceObjectResponse<UserLoginResponseDTO>() { Type = ServiceResponseType.Success, Value = userLoginResponseDto };
     }
