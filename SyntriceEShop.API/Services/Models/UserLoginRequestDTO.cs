@@ -1,4 +1,4 @@
-namespace SyntriceEShop.API.Services.UserServices.Models;
+namespace SyntriceEShop.API.Services.Models;
 
 public class UserLoginRequestDTO
 {

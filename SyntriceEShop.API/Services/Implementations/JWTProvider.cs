@@ -7,9 +7,10 @@ using Microsoft.IdentityModel.Tokens;
 using SyntriceEShop.API.ApplicationOptions;
 using SyntriceEShop.API.Models.RefreshTokenModel;
 using SyntriceEShop.API.Models.UserModel;
+using SyntriceEShop.API.Services.Interfaces;
 using JwtRegisteredClaimNames = System.IdentityModel.Tokens.Jwt.JwtRegisteredClaimNames;
 
-namespace SyntriceEShop.API.Services.UserServices;
+namespace SyntriceEShop.API.Services.Implementations;
 
 public class JWTProvider(IOptions<JWTOptions> options) : IJWTProvider
 {

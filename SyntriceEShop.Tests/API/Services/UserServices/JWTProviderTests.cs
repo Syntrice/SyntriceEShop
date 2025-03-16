@@ -5,7 +5,7 @@ using Shouldly;
 using SyntriceEShop.API.ApplicationOptions;
 using SyntriceEShop.API.Models.RefreshTokenModel;
 using SyntriceEShop.API.Models.UserModel;
-using SyntriceEShop.API.Services.UserServices;
+using SyntriceEShop.API.Services.Implementations;
 
 namespace SyntriceEShop.Tests.API.Services.UserServices;
 

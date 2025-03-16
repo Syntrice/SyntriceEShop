@@ -1,6 +1,6 @@
 using SyntriceEShop.API.Models.UserModel;
 
-namespace SyntriceEShop.API.Repositories;
+namespace SyntriceEShop.API.Repositories.Interfaces;
 
 public interface IUserRepository
 {

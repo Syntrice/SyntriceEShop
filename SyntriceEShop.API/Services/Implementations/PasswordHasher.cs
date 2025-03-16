@@ -1,6 +1,7 @@
 using System.Security.Cryptography;
+using SyntriceEShop.API.Services.Interfaces;
 
-namespace SyntriceEShop.API.Services.UserServices;
+namespace SyntriceEShop.API.Services.Implementations;
 
 // TODO: Unit Tests
 public class PasswordHasher : IPasswordHasher

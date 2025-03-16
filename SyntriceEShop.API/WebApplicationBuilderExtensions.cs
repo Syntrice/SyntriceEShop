@@ -9,8 +9,11 @@ using SyntriceEShop.API.ApplicationOptions;
 using SyntriceEShop.API.Database;
 using SyntriceEShop.API.Models.UserModel;
 using SyntriceEShop.API.Repositories;
+using SyntriceEShop.API.Repositories.Implementations;
+using SyntriceEShop.API.Repositories.Interfaces;
 using SyntriceEShop.API.Services;
-using SyntriceEShop.API.Services.UserServices;
+using SyntriceEShop.API.Services.Implementations;
+using SyntriceEShop.API.Services.Interfaces;
 
 namespace SyntriceEShop.API;
 

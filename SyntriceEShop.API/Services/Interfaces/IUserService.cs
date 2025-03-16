@@ -1,7 +1,6 @@
-using SyntriceEShop.API.Models.UserModel;
-using SyntriceEShop.API.Services.UserServices.Models;
+using SyntriceEShop.API.Services.Models;
 
-namespace SyntriceEShop.API.Services.UserServices;
+namespace SyntriceEShop.API.Services.Interfaces;
 
 public interface IUserService
 {

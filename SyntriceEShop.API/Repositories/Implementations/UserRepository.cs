@@ -1,8 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using SyntriceEShop.API.Database;
 using SyntriceEShop.API.Models.UserModel;
+using SyntriceEShop.API.Repositories.Interfaces;
 
-namespace SyntriceEShop.API.Repositories;
+namespace SyntriceEShop.API.Repositories.Implementations;
 
 public class UserRepository(ApplicationDbContext db) : IUserRepository
 {

@@ -1,9 +1,10 @@
 using SyntriceEShop.API.Models.RefreshTokenModel;
 using SyntriceEShop.API.Models.UserModel;
-using SyntriceEShop.API.Repositories;
-using SyntriceEShop.API.Services.UserServices.Models;
+using SyntriceEShop.API.Repositories.Interfaces;
+using SyntriceEShop.API.Services.Interfaces;
+using SyntriceEShop.API.Services.Models;
 
-namespace SyntriceEShop.API.Services.UserServices;
+namespace SyntriceEShop.API.Services.Implementations;
 
 public class UserService(
     IUserRepository userRepository,

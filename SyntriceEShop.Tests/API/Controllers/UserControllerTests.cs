@@ -7,8 +7,8 @@ using SyntriceEShop.API.ApplicationOptions;
 using SyntriceEShop.API.Controllers;
 using SyntriceEShop.API.Models.UserModel;
 using SyntriceEShop.API.Services;
-using SyntriceEShop.API.Services.UserServices;
-using SyntriceEShop.API.Services.UserServices.Models;
+using SyntriceEShop.API.Services.Interfaces;
+using SyntriceEShop.API.Services.Models;
 
 namespace SyntriceEShop.Tests.API.Controllers;
 
