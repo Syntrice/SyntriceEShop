@@ -1,6 +1,5 @@
 using SyntriceEShop.API.Models.OrderModel;
 using SyntriceEShop.API.Models.ShoppingCartModel;
-using SyntriceEShop.Common.Models;
 
 namespace SyntriceEShop.API.Models.UserModel;
 

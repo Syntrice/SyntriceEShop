@@ -1,5 +1,4 @@
 using SyntriceEShop.API.Models.UserModel;
-using SyntriceEShop.Common.Models;
 
 namespace SyntriceEShop.API.Models.RefreshTokenModel;
 

@@ -1,5 +1,6 @@
+using SyntriceEShop.API.Models.OrderProductModel;
+using SyntriceEShop.API.Models.ProductModel;
 using SyntriceEShop.API.Models.UserModel;
-using SyntriceEShop.Common.Models;
 
 namespace SyntriceEShop.API.Models.OrderModel;
 
@@ -12,5 +13,6 @@ public class Order : IEntity
     
     // Navigation properties
     public User User { get; set; } = null!;
-
+    public IEnumerable<Product> Products { get; } = [];
+    public IEnumerable<OrderProduct> OrderProducts { get; } = [];
 }

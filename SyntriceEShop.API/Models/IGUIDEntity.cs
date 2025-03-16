@@ -1,4 +1,4 @@
-namespace SyntriceEShop.Common.Models;
+namespace SyntriceEShop.API.Models;
 
 public interface IGUIDEntity
 {

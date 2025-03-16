@@ -1,5 +1,4 @@
 using SyntriceEShop.API.Models.ProductModel;
-using SyntriceEShop.Common.Models;
 
 namespace SyntriceEShop.API.Models.ProductCategoryModel;
 
