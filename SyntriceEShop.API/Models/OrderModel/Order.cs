@@ -4,7 +4,7 @@ using SyntriceEShop.API.Models.UserModel;
 
 namespace SyntriceEShop.API.Models.OrderModel;
 
-public class Order : IHasId
+public class Order : IEntity<int>
 {
     public int Id { get; set; }
     public int UserId { get; set; } 

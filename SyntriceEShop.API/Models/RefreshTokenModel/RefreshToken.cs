@@ -2,7 +2,7 @@ using SyntriceEShop.API.Models.UserModel;
 
 namespace SyntriceEShop.API.Models.RefreshTokenModel;
 
-public class RefreshToken : IHasGUID
+public class RefreshToken : IEntity<Guid>
 {
     public Guid Id { get; set; }
     public int UserId { get; set; }
