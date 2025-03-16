@@ -276,7 +276,7 @@ public class UserServiceTests
         public async Task CallsTokenProvider_GenerateToken_WithRefreshTokenUser()
         {
             // Arrange
-            var userRefreshRequestDto = new UserRefreshRequestDTO() { RefreshToken = "refreshToken", AccessToken = "accessToken" };
+            var userRefreshRequestDto = new UserRefreshRequestDTO() { RefreshToken = "refreshToken" };
             var user = new User() { Id = 1, Username = "username", PasswordHash = "hashedpassword" };
             var refreshToken = new RefreshToken() { Id = Guid.NewGuid(), UserId = user.Id, Token = userRefreshRequestDto.RefreshToken, ExpiresOnUTC = DateTime.UtcNow.AddDays(7), User = user};
             _refreshTokenRepository.GetByTokenValue(userRefreshRequestDto.RefreshToken).Returns(refreshToken);
@@ -293,7 +293,7 @@ public class UserServiceTests
         public async Task CallsTokenProvider_UpdateRefreshToken_WithInputRefreshToken()
         {
             // Arrange
-            var userRefreshRequestDto = new UserRefreshRequestDTO() { RefreshToken = "refreshToken", AccessToken = "accessToken" };
+            var userRefreshRequestDto = new UserRefreshRequestDTO() { RefreshToken = "refreshToken" };
             var user = new User() { Id = 1, Username = "username", PasswordHash = "hashedpassword" };
             var refreshToken = new RefreshToken() { Id = Guid.NewGuid(), UserId = user.Id, Token = userRefreshRequestDto.RefreshToken, ExpiresOnUTC = DateTime.UtcNow.AddDays(7), User = user};
             _refreshTokenRepository.GetByTokenValue(userRefreshRequestDto.RefreshToken).Returns(refreshToken);
@@ -310,7 +310,7 @@ public class UserServiceTests
         public async Task WithNullRefreshToken_ReturnsInvalidCredentialsResponseType()
         {
             // Arrange
-            var userRefreshRequestDto = new UserRefreshRequestDTO() { RefreshToken = "refreshToken", AccessToken = "accessToken" };
+            var userRefreshRequestDto = new UserRefreshRequestDTO() { RefreshToken = "refreshToken" };
             _refreshTokenRepository.GetByTokenValue(userRefreshRequestDto.RefreshToken).ReturnsNull();
 
             
@@ -325,7 +325,7 @@ public class UserServiceTests
         public async Task WithExpiredRefreshToken_ReturnsInvalidCredentialsResponseType()
         {
             // Arrange
-            var userRefreshRequestDto = new UserRefreshRequestDTO() { RefreshToken = "refreshToken", AccessToken = "accessToken" };
+            var userRefreshRequestDto = new UserRefreshRequestDTO() { RefreshToken = "refreshToken" };
             var user = new User() { Id = 1, Username = "username", PasswordHash = "hashedpassword" };
             var refreshToken = new RefreshToken() { Id = Guid.NewGuid(), UserId = user.Id, Token = userRefreshRequestDto.RefreshToken, ExpiresOnUTC = DateTime.UtcNow.Subtract(TimeSpan.FromDays(7)), User = user};
             _refreshTokenRepository.GetByTokenValue(userRefreshRequestDto.RefreshToken).Returns(refreshToken);
@@ -341,7 +341,7 @@ public class UserServiceTests
         public async Task WithValidToken_ReturnsSuccessResponseTypeWithResponseDT()
         {
             // Arrange
-            var userRefreshRequestDto = new UserRefreshRequestDTO() { RefreshToken = "refreshToken", AccessToken = "accessToken" };
+            var userRefreshRequestDto = new UserRefreshRequestDTO() { RefreshToken = "refreshToken" };
             var user = new User() { Id = 1, Username = "username", PasswordHash = "hashedpassword" };
             
             var refreshToken = new RefreshToken() { Id = Guid.NewGuid(), UserId = user.Id, Token = userRefreshRequestDto.RefreshToken, ExpiresOnUTC = DateTime.UtcNow.AddDays(7), User = user};
