@@ -5,7 +5,7 @@ using SyntriceEShop.API.Models.UserModel;
 
 namespace SyntriceEShop.API.Models.ShoppingCartModel;
 
-public class ShoppingCart : IEntity
+public class ShoppingCart : IHasId
 {
     public int Id { get; set; }
     public int UserId { get; set; }

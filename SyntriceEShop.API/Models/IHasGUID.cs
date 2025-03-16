@@ -1,6 +1,6 @@
 namespace SyntriceEShop.API.Models;
 
-public interface IGUIDEntity
+public interface IHasGUID
 {
     Guid Id { get; set; }
 }

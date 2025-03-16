@@ -3,7 +3,7 @@ namespace SyntriceEShop.API.Models;
 /// <summary>
 /// Interface for all entities. Uses integer based Id for simplicity over GUID.
 /// </summary>
-public interface IEntity 
+public interface IHasId 
 { 
     int Id { get; set; }
 }
