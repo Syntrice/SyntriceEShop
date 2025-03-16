@@ -9,5 +9,5 @@ public interface IUserController
     Task<IActionResult> RegisterAsync([FromBody] UserRegisterRequestDTO userRegisterRequestDto);
     Task<IActionResult> LoginAsync([FromBody] UserLoginRequestDTO userLoginRequestDto, [FromQuery] bool useCookies = false);
 
-    Task<IActionResult> RefreshAsync([FromBody] UserRefreshRequestDTO userRefreshRequestDto);
+    Task<IActionResult> RefreshAsync([FromBody] UserRefreshRequestDTO userRefreshRequestDto, [FromQuery] bool useCookies = false);
 }

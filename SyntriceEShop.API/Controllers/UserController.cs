@@ -37,10 +37,10 @@ public class UserController(IUserService userService, IOptions<JWTOptions> jwtOp
     {
         var result = await userService.LoginAsync(userLoginRequestDto);
 
-        if (result is { Type: ServiceResponseType.Success, Value: not null })
+        if (result is { Type: ServiceResponseType.Success, Value: not null }) 
         {
             //  Whether to send the tokens as cookies or not
-            if (useCookies)
+            if (useCookies) // TODO: Unit tests
             {
                 // Set cookies for both access token and refresh token
                 Response.Cookies.Append("accessToken", result.Value.AccessToken, new CookieOptions
@@ -90,18 +90,64 @@ public class UserController(IUserService userService, IOptions<JWTOptions> jwtOp
 
     [HttpPost]
     [Route("refresh")]
-    public async Task<IActionResult> RefreshAsync([FromBody] UserRefreshRequestDTO userRefreshRequestDto)
+    public async Task<IActionResult> RefreshAsync([FromBody] UserRefreshRequestDTO userRefreshRequestDto, [FromQuery] bool useCookies = false)
     {
-        var result = await userService.RefreshAsync(userRefreshRequestDto);
-
-        switch (result.Type)
+        if (useCookies) // TODO: Unit tests
         {
-            case ServiceResponseType.Success:
-                return Ok(result.Value);
-            case ServiceResponseType.InvalidCredentials:
+            var refreshTokenCookie = Request.Cookies["refreshToken"]; // attempt to get cookie
+            
+            if (string.IsNullOrEmpty(refreshTokenCookie)) // check if cookie exists
+            {
+                return BadRequest();
+            }
+            var userRefreshRequestDtoFromCookies = new UserRefreshRequestDTO() { RefreshToken = refreshTokenCookie };
+            
+            var result = await userService.RefreshAsync(userRefreshRequestDtoFromCookies);
+
+            // If success update cookies
+            if (result is { Type: ServiceResponseType.Success, Value: not null })
+            {
+                Response.Cookies.Append("accessToken", result.Value.AccessToken, new CookieOptions
+                {
+                    Expires = DateTimeOffset.UtcNow.AddMinutes(jwtOptions.Value.ExpirationInMinutes),
+                    HttpOnly = true,
+                    IsEssential = true,
+                    Secure = true,
+                    // unfortunately we have to use SameSiteMode.None as this is an API and will be called by a separate
+                    // front end server likely on a different domain. 
+                    SameSite = SameSiteMode.None
+                });
+
+                Response.Cookies.Append("refreshToken", result.Value.RefreshToken, new CookieOptions
+                {
+                    Expires = DateTimeOffset.UtcNow.AddDays(jwtOptions.Value.RefreshTokenExpirationInDays),
+                    HttpOnly = true,
+                    IsEssential = true,
+                    Secure = true,
+                    // unfortunately we have to use SameSiteMode.None as this is an API and will be called by a separate
+                });
+                
+                return Ok();
+            }
+            
+            if (result.Type == ServiceResponseType.InvalidCredentials)
+            {
                 return Unauthorized(result.Message);
-            default:
-                return StatusCode(500); // Fallback response
+            }
+
+            return StatusCode(500);
+        }
+        else
+        {
+            var result = await userService.RefreshAsync(userRefreshRequestDto);
+            
+            return result.Type switch
+            {
+                ServiceResponseType.Success => Ok(result.Value),
+                ServiceResponseType.InvalidCredentials => Unauthorized(result.Message),
+                _ => StatusCode(500) // Fallback response
+
+            };
         }
     }
 
