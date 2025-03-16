@@ -91,6 +91,30 @@ public static class WebApplicationBuilderExtensions
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.Value.SecretKey)),
                     ValidateIssuerSigningKey = true,
                 };
+
+                // Implement the abiltiy for the asp.net authentication middleware to get the token from the cookie
+                options.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        if (context.Request.Cookies.TryGetValue("accessToken", out var accessTokenFromCookie))
+                        {
+                            context.Token = accessTokenFromCookie;
+                        }
+                        // else, try and get the token from the authorization header
+
+                        else if (context.Request.Headers.TryGetValue("Authorization", out var authorizationHeader))
+                        {
+                            var tokenValue = authorizationHeader.FirstOrDefault();
+                            if (!string.IsNullOrEmpty(tokenValue) && tokenValue.StartsWith("Bearer"))
+                            {
+                                context.Token = tokenValue.Substring("Bearer ".Length);
+                            }
+                        }
+
+                        return Task.CompletedTask;
+                    }
+                };
             });
     }
 
@@ -126,7 +150,7 @@ public static class WebApplicationBuilderExtensions
                     []
                 }
             };
-            
+
             options.AddSecurityRequirement(securityRequirement);
         });
     }

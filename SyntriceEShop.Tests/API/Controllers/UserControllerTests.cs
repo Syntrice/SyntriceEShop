@@ -1,6 +1,9 @@
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using NSubstitute;
 using Shouldly;
+using SyntriceEShop.API.ApplicationOptions;
 using SyntriceEShop.API.Controllers;
 using SyntriceEShop.API.Models.UserModel;
 using SyntriceEShop.API.Services;
@@ -13,12 +16,29 @@ public class UserControllerTests
 {
     private IUserService _userService;
     private UserController _userController;
+    private IOptions<JWTOptions> _options;
     
     [SetUp]
     public void Setup()
     {
         _userService = Substitute.For<IUserService>();
-        _userController = new UserController(_userService);
+        _options = Substitute.For<IOptions<JWTOptions>>();
+        var jwtOptions = GetDefaultJWTOptions();
+        _options.Value.Returns(jwtOptions);
+        _userController = new UserController(_userService, _options);
+    }
+    
+    public static JWTOptions GetDefaultJWTOptions()
+    {
+        return new JWTOptions()
+        {
+            SecretKey = "d6bW9fMV3tCx7FAZpxc5doDpIRbWkxSk", 
+            Issuer = "automated", 
+            Audience = "test",
+            ExpirationInMinutes = 30,
+            RefreshTokenSize = 32,
+            RefreshTokenExpirationInDays = 7
+        };
     }
 
     [TestFixture]
@@ -131,6 +151,27 @@ public class UserControllerTests
             // Assert
             response.ShouldBeOfType(typeof(UnauthorizedObjectResult));
         }
+        
+        [Test]
+        public async Task WhenUseCookiesTrue_ReturnsRefreshTokenCookie()
+        {
+            // TODO
+            Assert.Ignore();
+        }
+
+        [Test]
+        public async Task WhenUseCookiesTrue_ReturnsAccessTokenCookie()
+        {
+            // TODO
+            Assert.Ignore();
+        }
+
+        [Test]
+        public async Task WhenUseCookiesTrue_ReturnsEmptyBody()
+        {
+            // TODO
+            Assert.Ignore();
+        }
     }
 
     [TestFixture]
@@ -186,6 +227,4 @@ public class UserControllerTests
             resultValue.ShouldBe(userRefreshResponseDTO);
         }
     }
-
-    
 }
