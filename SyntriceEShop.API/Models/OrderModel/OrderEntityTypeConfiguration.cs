@@ -8,5 +8,6 @@ public class OrderEntityTypeConfiguration : IEntityTypeConfiguration<Order>
 {
     public void Configure(EntityTypeBuilder<Order> builder)
     {
+        builder.HasOne<User>(e => e.User).WithMany(e => e.Orders).HasForeignKey(e => e.UserId);
     }
 }
