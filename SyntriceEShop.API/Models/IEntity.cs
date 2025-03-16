@@ -1,4 +1,4 @@
-namespace SyntriceEShop.Common.Models;
+namespace SyntriceEShop.API.Models;
 
 /// <summary>
 /// Interface for all entities. Uses integer based Id for simplicity over GUID.

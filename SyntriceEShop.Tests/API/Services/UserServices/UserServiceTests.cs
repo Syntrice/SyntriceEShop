@@ -6,6 +6,7 @@ using SyntriceEShop.API.Models.UserModel;
 using SyntriceEShop.API.Repositories;
 using SyntriceEShop.API.Services;
 using SyntriceEShop.API.Services.UserServices;
+using SyntriceEShop.API.Services.UserServices.Models;
 
 namespace SyntriceEShop.Tests.API.Services.UserServices;
 
