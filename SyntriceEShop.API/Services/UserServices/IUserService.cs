@@ -1,4 +1,5 @@
 using SyntriceEShop.API.Models.UserModel;
+using SyntriceEShop.API.Services.UserServices.Models;
 
 namespace SyntriceEShop.API.Services.UserServices;
 
