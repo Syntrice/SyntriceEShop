@@ -5,9 +5,11 @@ using SyntriceEShop.API.Repositories.Interfaces;
 
 namespace SyntriceEShop.API.Repositories.Implementations;
 
-public abstract class GenericRepository<TEntity, TIdType>(ApplicationDbContext db)
+public abstract class GenericRepository<TEntity, TIdType>(ApplicationDbContext _db)
     : IGenericRepository<TEntity, TIdType> where TEntity : class, IEntity<TIdType>
 {
+    protected ApplicationDbContext db { get; } = _db;
+    
     public async Task<TEntity?> DeleteByIdAsync(TIdType id)
     {
         var entity = await db.Set<TEntity>().FindAsync(id);
