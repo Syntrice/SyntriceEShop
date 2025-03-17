@@ -11,7 +11,7 @@ using SyntriceEShop.API.Services.Interfaces;
 namespace SyntriceEShop.API.Controllers;
 
 [ApiController]
-[Route("api/user")]
+[Route("api/auth")]
 public class AuthController(IAuthService authService, IOptions<JWTOptions> jwtOptions) : ControllerBase, IAuthController
 {
     [HttpPost]
