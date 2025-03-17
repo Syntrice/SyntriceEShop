@@ -1,14 +1,14 @@
-using SyntriceEShop.API.Services.Models;
+using SyntriceEShop.API.Models.UserModel.DTO;
 
 namespace SyntriceEShop.API.Services.Interfaces;
 
 public interface IUserService
 {
-    Task<ServiceResponse> RegisterAsync(UserRegisterRequestDTO userRegisterRequestDto);
-    Task<ServiceObjectResponse<UserLoginResponseDTO>> LoginAsync(UserLoginRequestDTO userLoginRequestDto);
+    Task<ServiceResponse> RegisterAsync(UserRegisterRequest userRegisterRequest);
+    Task<ServiceObjectResponse<UserLoginResponse>> LoginAsync(UserLoginRequest userLoginRequest);
 
-    Task<ServiceObjectResponse<UserRefreshResponseDTO>> RefreshAsync(
-        UserRefreshRequestDTO userRefreshRequestDto);
+    Task<ServiceObjectResponse<UserRefreshResponse>> RefreshAsync(
+        UserRefreshRequest userRefreshRequest);
 
     Task<ServiceResponse> RevokeRefreshTokensAsync(int userId);
 }

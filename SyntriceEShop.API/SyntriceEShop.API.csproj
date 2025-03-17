@@ -15,4 +15,12 @@
       <PackageReference Include="Swashbuckle.AspNetCore" Version="7.3.1" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Models\OrderModel\DTO\" />
+      <Folder Include="Models\ProductCategoryModel\DTO\" />
+      <Folder Include="Models\ProductModel\DTO\" />
+      <Folder Include="Models\RefreshTokenModel\DTO\" />
+      <Folder Include="Models\ShoppingCartModel\DTO\" />
+    </ItemGroup>
+
 </Project>

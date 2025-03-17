@@ -4,9 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using SyntriceEShop.API.ApplicationOptions;
 using SyntriceEShop.API.Models.UserModel;
+using SyntriceEShop.API.Models.UserModel.DTO;
 using SyntriceEShop.API.Services;
 using SyntriceEShop.API.Services.Interfaces;
-using SyntriceEShop.API.Services.Models;
 
 namespace SyntriceEShop.API.Controllers;
 
@@ -16,9 +16,9 @@ public class UserController(IUserService userService, IOptions<JWTOptions> jwtOp
 {
     [HttpPost]
     [Route("register")]
-    public async Task<IActionResult> RegisterAsync([FromBody] UserRegisterRequestDTO userRegisterRequestDto)
+    public async Task<IActionResult> RegisterAsync([FromBody] UserRegisterRequest userRegisterRequest)
     {
-        var result = await userService.RegisterAsync(userRegisterRequestDto);
+        var result = await userService.RegisterAsync(userRegisterRequest);
 
         switch (result.Type)
         {
@@ -33,10 +33,10 @@ public class UserController(IUserService userService, IOptions<JWTOptions> jwtOp
 
     [HttpPost]
     [Route("login")]
-    public async Task<IActionResult> LoginAsync([FromBody] UserLoginRequestDTO userLoginRequestDto,
+    public async Task<IActionResult> LoginAsync([FromBody] UserLoginRequest userLoginRequest,
         [FromQuery] bool useCookies = false)
     {
-        var result = await userService.LoginAsync(userLoginRequestDto);
+        var result = await userService.LoginAsync(userLoginRequest);
 
         if (result is { Type: ServiceResponseType.Success, Value: not null }) 
         {
@@ -91,7 +91,7 @@ public class UserController(IUserService userService, IOptions<JWTOptions> jwtOp
 
     [HttpPost]
     [Route("refresh")]
-    public async Task<IActionResult> RefreshAsync([FromBody] UserRefreshRequestDTO userRefreshRequestDto, [FromQuery] bool useCookies = false)
+    public async Task<IActionResult> RefreshAsync([FromBody] UserRefreshRequest userRefreshRequest, [FromQuery] bool useCookies = false)
     {
         if (useCookies) // TODO: Unit tests
         {
@@ -101,7 +101,7 @@ public class UserController(IUserService userService, IOptions<JWTOptions> jwtOp
             {
                 return BadRequest();
             }
-            var userRefreshRequestDtoFromCookies = new UserRefreshRequestDTO() { RefreshToken = refreshTokenCookie };
+            var userRefreshRequestDtoFromCookies = new UserRefreshRequest() { RefreshToken = refreshTokenCookie };
             
             var result = await userService.RefreshAsync(userRefreshRequestDtoFromCookies);
 
@@ -140,7 +140,7 @@ public class UserController(IUserService userService, IOptions<JWTOptions> jwtOp
         }
         else
         {
-            var result = await userService.RefreshAsync(userRefreshRequestDto);
+            var result = await userService.RefreshAsync(userRefreshRequest);
             
             return result.Type switch
             {

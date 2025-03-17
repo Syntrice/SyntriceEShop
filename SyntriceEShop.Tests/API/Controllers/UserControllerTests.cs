@@ -6,9 +6,9 @@ using Shouldly;
 using SyntriceEShop.API.ApplicationOptions;
 using SyntriceEShop.API.Controllers;
 using SyntriceEShop.API.Models.UserModel;
+using SyntriceEShop.API.Models.UserModel.DTO;
 using SyntriceEShop.API.Services;
 using SyntriceEShop.API.Services.Interfaces;
-using SyntriceEShop.API.Services.Models;
 
 namespace SyntriceEShop.Tests.API.Controllers;
 
@@ -49,7 +49,7 @@ public class UserControllerTests
         public async Task CallsUserService_RegisterAsync_WithUserRegisterDTO()
         {
             // Arrange
-            var userRegisterDTO = new UserRegisterRequestDTO() { Username = "username", Password = "password" };
+            var userRegisterDTO = new UserRegisterRequest() { Username = "username", Password = "password" };
             _userService.RegisterAsync(userRegisterDTO).Returns(new ServiceResponse());
         
             // Act
@@ -63,7 +63,7 @@ public class UserControllerTests
         public async Task WhenUserService_RegisterAsyncReturnsSuccess_ReturnOkResult()
         {
             // Arrange
-            var userRegisterDTO = new UserRegisterRequestDTO() { Username = "username", Password = "password" };
+            var userRegisterDTO = new UserRegisterRequest() { Username = "username", Password = "password" };
             _userService.RegisterAsync(userRegisterDTO).Returns(new ServiceResponse() {Type = ServiceResponseType.Success});
         
             // Act
@@ -77,7 +77,7 @@ public class UserControllerTests
         public async Task WhenUserService_RegisterAsyncReturnsConflict_ReturnsConflictObjectResult()
         {
             // Arrange
-            var userRegisterDTO = new UserRegisterRequestDTO() { Username = "username", Password = "password" };
+            var userRegisterDTO = new UserRegisterRequest() { Username = "username", Password = "password" };
             _userService.RegisterAsync(userRegisterDTO).Returns(new ServiceResponse() {Type = ServiceResponseType.Conflict});
         
             // Act
@@ -95,8 +95,8 @@ public class UserControllerTests
         public async Task CallsUserService_LoginAsync_WithUseLoginDTO()
         {
             // Arrange
-            var userLoginDTO = new UserLoginRequestDTO() { Username = "username", Password = "password" };
-            _userService.LoginAsync(userLoginDTO).Returns(new ServiceObjectResponse<UserLoginResponseDTO>());
+            var userLoginDTO = new UserLoginRequest() { Username = "username", Password = "password" };
+            _userService.LoginAsync(userLoginDTO).Returns(new ServiceObjectResponse<UserLoginResponse>());
         
             // Act
             await _userController.LoginAsync(userLoginDTO);
@@ -109,9 +109,9 @@ public class UserControllerTests
         public async Task WhenUserService_LoginAsyncReturnsSuccess_ReturnOkObjectResultWithTokens()
         {
             // Arrange
-            var userLoginDTO = new UserLoginRequestDTO() { Username = "username", Password = "password" };
-            var userLoginResponseDTO = new UserLoginResponseDTO() { AccessToken = "token", RefreshToken = "refreshToken" };
-            var serviceResponse = new ServiceObjectResponse<UserLoginResponseDTO>() {Type = ServiceResponseType.Success, Value = userLoginResponseDTO};
+            var userLoginDTO = new UserLoginRequest() { Username = "username", Password = "password" };
+            var userLoginResponseDTO = new UserLoginResponse() { AccessToken = "token", RefreshToken = "refreshToken" };
+            var serviceResponse = new ServiceObjectResponse<UserLoginResponse>() {Type = ServiceResponseType.Success, Value = userLoginResponseDTO};
             _userService.LoginAsync(userLoginDTO).Returns(serviceResponse);
         
             // Act
@@ -119,7 +119,7 @@ public class UserControllerTests
         
             // Assert
             response.ShouldBeOfType(typeof(OkObjectResult));
-            var responseValue = (response as OkObjectResult)?.Value as UserLoginResponseDTO;
+            var responseValue = (response as OkObjectResult)?.Value as UserLoginResponse;
             responseValue.ShouldBe(userLoginResponseDTO);
         }
         
@@ -127,8 +127,8 @@ public class UserControllerTests
         public async Task WhenUserService_LoginAsyncReturnsNotFound_ReturnNotFoundObjectResult()
         {
             // Arrange
-            var userLoginDTO = new UserLoginRequestDTO() { Username = "username", Password = "password" };
-            var serviceResponse = new ServiceObjectResponse<UserLoginResponseDTO>() {Type = ServiceResponseType.NotFound};
+            var userLoginDTO = new UserLoginRequest() { Username = "username", Password = "password" };
+            var serviceResponse = new ServiceObjectResponse<UserLoginResponse>() {Type = ServiceResponseType.NotFound};
             _userService.LoginAsync(userLoginDTO).Returns(serviceResponse);
         
             // Act
@@ -142,8 +142,8 @@ public class UserControllerTests
         public async Task WhenUserService_LoginAsyncReturnsInvalidCredentials_ReturnUnauthorizedObjectResult()
         {
             // Arrange
-            var userLoginDTO = new UserLoginRequestDTO() { Username = "username", Password = "password" };
-            var serviceResponse = new ServiceObjectResponse<UserLoginResponseDTO>() {Type = ServiceResponseType.InvalidCredentials};
+            var userLoginDTO = new UserLoginRequest() { Username = "username", Password = "password" };
+            var serviceResponse = new ServiceObjectResponse<UserLoginResponse>() {Type = ServiceResponseType.InvalidCredentials};
             _userService.LoginAsync(userLoginDTO).Returns(serviceResponse);
         
             // Act
@@ -182,8 +182,8 @@ public class UserControllerTests
         public async Task CallsUserService_RefreshAsync_WithUserRefreshRequestDTO()
         {
             // Arrange
-            var userRefreshRequestDto = new UserRefreshRequestDTO() { RefreshToken = "refreshToken" };
-            var response = new ServiceObjectResponse<UserRefreshResponseDTO>();
+            var userRefreshRequestDto = new UserRefreshRequest() { RefreshToken = "refreshToken" };
+            var response = new ServiceObjectResponse<UserRefreshResponse>();
             _userService.RefreshAsync(userRefreshRequestDto).Returns(response);
 
             // Act
@@ -197,8 +197,8 @@ public class UserControllerTests
         public async Task WhenUserService_RefreshAsyncReturnsInvalidCredentials_ReturnUnauthorizedObjectResult()
         {
             // Arrange
-            var userRefreshRequestDto = new UserRefreshRequestDTO() { RefreshToken = "refreshToken" };
-            var response = new ServiceObjectResponse<UserRefreshResponseDTO>()
+            var userRefreshRequestDto = new UserRefreshRequest() { RefreshToken = "refreshToken" };
+            var response = new ServiceObjectResponse<UserRefreshResponse>()
                 { Type = ServiceResponseType.InvalidCredentials };
             _userService.RefreshAsync(userRefreshRequestDto).Returns(response);
 
@@ -213,9 +213,9 @@ public class UserControllerTests
         public async Task WhenUserService_RefreshAsyncReturnsSuccess_ReturnOkObjectResultWithTokens()
         {
             // Arrange
-            var refreshRequestDTO = new UserRefreshRequestDTO() { RefreshToken = "refreshToken" };
-            var userRefreshResponseDTO = new UserRefreshResponseDTO() { AccessToken = "token", RefreshToken = "refreshToken" };
-            var response = new ServiceObjectResponse<UserRefreshResponseDTO>()
+            var refreshRequestDTO = new UserRefreshRequest() { RefreshToken = "refreshToken" };
+            var userRefreshResponseDTO = new UserRefreshResponse() { AccessToken = "token", RefreshToken = "refreshToken" };
+            var response = new ServiceObjectResponse<UserRefreshResponse>()
                 { Type = ServiceResponseType.Success, Value = userRefreshResponseDTO};
             _userService.RefreshAsync(refreshRequestDTO).Returns(response);
 
@@ -224,7 +224,7 @@ public class UserControllerTests
 
             // Assert
             result.ShouldBeOfType(typeof(OkObjectResult));
-            var resultValue = (result as OkObjectResult)?.Value as UserRefreshResponseDTO;
+            var resultValue = (result as OkObjectResult)?.Value as UserRefreshResponse;
             resultValue.ShouldBe(userRefreshResponseDTO);
         }
     }
