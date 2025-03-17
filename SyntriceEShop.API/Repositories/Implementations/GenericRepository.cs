@@ -5,7 +5,7 @@ using SyntriceEShop.API.Repositories.Interfaces;
 
 namespace SyntriceEShop.API.Repositories.Implementations;
 
-public class GenericRepository<TEntity, TIdType>(ApplicationDbContext db)
+public abstract class GenericRepository<TEntity, TIdType>(ApplicationDbContext db)
     : IGenericRepository<TEntity, TIdType> where TEntity : class, IEntity<TIdType>
 {
     public async Task<TEntity?> DeleteByIdAsync(TIdType id)
