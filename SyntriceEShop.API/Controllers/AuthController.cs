@@ -3,22 +3,22 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using SyntriceEShop.API.ApplicationOptions;
+using SyntriceEShop.API.Models.AuthModel.DTO;
 using SyntriceEShop.API.Models.UserModel;
 using SyntriceEShop.API.Services;
-using SyntriceEShop.API.Services.UserServices;
-using SyntriceEShop.API.Services.UserServices.Models;
+using SyntriceEShop.API.Services.Interfaces;
 
 namespace SyntriceEShop.API.Controllers;
 
 [ApiController]
-[Route("api/user")]
-public class UserController(IUserService userService, IOptions<JWTOptions> jwtOptions) : ControllerBase, IUserController
+[Route("api/auth")]
+public class AuthController(IAuthService authService, IOptions<JWTOptions> jwtOptions) : ControllerBase, IAuthController
 {
     [HttpPost]
     [Route("register")]
-    public async Task<IActionResult> RegisterAsync([FromBody] UserRegisterRequestDTO userRegisterRequestDto)
+    public async Task<IActionResult> RegisterAsync([FromBody] AuthRegisterRequest authRegisterRequest)
     {
-        var result = await userService.RegisterAsync(userRegisterRequestDto);
+        var result = await authService.RegisterAsync(authRegisterRequest);
 
         switch (result.Type)
         {
@@ -33,10 +33,10 @@ public class UserController(IUserService userService, IOptions<JWTOptions> jwtOp
 
     [HttpPost]
     [Route("login")]
-    public async Task<IActionResult> LoginAsync([FromBody] UserLoginRequestDTO userLoginRequestDto,
+    public async Task<IActionResult> LoginAsync([FromBody] AuthLoginRequest authLoginRequest,
         [FromQuery] bool useCookies = false)
     {
-        var result = await userService.LoginAsync(userLoginRequestDto);
+        var result = await authService.LoginAsync(authLoginRequest);
 
         if (result is { Type: ServiceResponseType.Success, Value: not null }) 
         {
@@ -91,7 +91,7 @@ public class UserController(IUserService userService, IOptions<JWTOptions> jwtOp
 
     [HttpPost]
     [Route("refresh")]
-    public async Task<IActionResult> RefreshAsync([FromBody] UserRefreshRequestDTO userRefreshRequestDto, [FromQuery] bool useCookies = false)
+    public async Task<IActionResult> RefreshAsync([FromBody] AuthRefreshRequest authRefreshRequest, [FromQuery] bool useCookies = false)
     {
         if (useCookies) // TODO: Unit tests
         {
@@ -101,9 +101,9 @@ public class UserController(IUserService userService, IOptions<JWTOptions> jwtOp
             {
                 return BadRequest();
             }
-            var userRefreshRequestDtoFromCookies = new UserRefreshRequestDTO() { RefreshToken = refreshTokenCookie };
+            var userRefreshRequestDtoFromCookies = new AuthRefreshRequest() { RefreshToken = refreshTokenCookie };
             
-            var result = await userService.RefreshAsync(userRefreshRequestDtoFromCookies);
+            var result = await authService.RefreshAsync(userRefreshRequestDtoFromCookies);
 
             // If success update cookies
             if (result is { Type: ServiceResponseType.Success, Value: not null })
@@ -140,7 +140,7 @@ public class UserController(IUserService userService, IOptions<JWTOptions> jwtOp
         }
         else
         {
-            var result = await userService.RefreshAsync(userRefreshRequestDto);
+            var result = await authService.RefreshAsync(authRefreshRequest);
             
             return result.Type switch
             {
@@ -166,7 +166,7 @@ public class UserController(IUserService userService, IOptions<JWTOptions> jwtOp
             return Unauthorized();
         }
 
-        var result = await userService.RevokeRefreshTokensAsync(id);
+        var result = await authService.RevokeRefreshTokensAsync(id);
 
         switch (result.Type)
         {

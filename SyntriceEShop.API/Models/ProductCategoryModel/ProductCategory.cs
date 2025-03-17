@@ -2,7 +2,7 @@ using SyntriceEShop.API.Models.ProductModel;
 
 namespace SyntriceEShop.API.Models.ProductCategoryModel;
 
-public class ProductCategory : IEntity
+public class ProductCategory : IEntity<int>
 {
     public int Id { get; set; }
     public string Name { get; set; } = string.Empty;

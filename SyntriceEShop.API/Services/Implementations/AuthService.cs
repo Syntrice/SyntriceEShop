@@ -1,33 +1,34 @@
+using SyntriceEShop.API.Models.AuthModel.DTO;
 using SyntriceEShop.API.Models.RefreshTokenModel;
 using SyntriceEShop.API.Models.UserModel;
-using SyntriceEShop.API.Repositories;
-using SyntriceEShop.API.Services.UserServices.Models;
+using SyntriceEShop.API.Repositories.Interfaces;
+using SyntriceEShop.API.Services.Interfaces;
 
-namespace SyntriceEShop.API.Services.UserServices;
+namespace SyntriceEShop.API.Services.Implementations;
 
-public class UserService(
+public class AuthService(
     IUserRepository userRepository,
     IRefreshTokenRepository refreshTokenRepository,
     IUnitOfWork unitOfWork,
     IPasswordHasher passwordHasher,
     IJWTProvider tokenProvider)
-    : IUserService
+    : IAuthService
 {
-    public async Task<ServiceResponse> RegisterAsync(UserRegisterRequestDTO userRegisterRequestDto)
+    public async Task<ServiceResponse> RegisterAsync(AuthRegisterRequest authRegisterRequest)
     {
-        if (await userRepository.UsernameExistsAsync(userRegisterRequestDto.Username))
+        if (await userRepository.UsernameExistsAsync(authRegisterRequest.Username))
         {
             return new ServiceResponse()
             {
                 Type = ServiceResponseType.Conflict,
-                Message = $"User with username {userRegisterRequestDto.Username} already exists."
+                Message = $"User with username {authRegisterRequest.Username} already exists."
             };
         }
 
         var user = new User()
         {
-            Username = userRegisterRequestDto.Username,
-            PasswordHash = passwordHasher.Hash(userRegisterRequestDto.Password)
+            Username = authRegisterRequest.Username,
+            PasswordHash = passwordHasher.Hash(authRegisterRequest.Password)
         };
 
         var created = userRepository.Add(user);
@@ -38,23 +39,23 @@ public class UserService(
     }
 
     // for testing purpose for now return the user
-    public async Task<ServiceObjectResponse<UserLoginResponseDTO>> LoginAsync(UserLoginRequestDTO userLoginRequestDto)
+    public async Task<ServiceObjectResponse<AuthLoginResponse>> LoginAsync(AuthLoginRequest authLoginRequest)
     {
-        User? user = await userRepository.GetUserByUsernameAsync(userLoginRequestDto.Username);
+        User? user = await userRepository.GetUserByUsernameAsync(authLoginRequest.Username);
 
         if (user == null)
         {
-            return new ServiceObjectResponse<UserLoginResponseDTO>()
+            return new ServiceObjectResponse<AuthLoginResponse>()
             {
-                Type = ServiceResponseType.NotFound, Message = $"User {userLoginRequestDto.Username} does not exist."
+                Type = ServiceResponseType.NotFound, Message = $"User {authLoginRequest.Username} does not exist."
             };
         }
 
-        bool verified = passwordHasher.Verify(userLoginRequestDto.Password, user.PasswordHash);
+        bool verified = passwordHasher.Verify(authLoginRequest.Password, user.PasswordHash);
 
         if (!verified)
         {
-            return new ServiceObjectResponse<UserLoginResponseDTO>()
+            return new ServiceObjectResponse<AuthLoginResponse>()
                 { Type = ServiceResponseType.InvalidCredentials, Message = "Password is not valid." };
         }
 
@@ -66,24 +67,24 @@ public class UserService(
         refreshTokenRepository.Add(refreshToken);
         await unitOfWork.SaveChangesAsync();
 
-        UserLoginResponseDTO userLoginResponseDto = new UserLoginResponseDTO()
+        AuthLoginResponse authLoginResponse = new AuthLoginResponse()
         {
             AccessToken = token,
             RefreshToken = refreshToken.Token
         };
-        return new ServiceObjectResponse<UserLoginResponseDTO>()
-            { Type = ServiceResponseType.Success, Value = userLoginResponseDto };
+        return new ServiceObjectResponse<AuthLoginResponse>()
+            { Type = ServiceResponseType.Success, Value = authLoginResponse };
     }
 
-    public async Task<ServiceObjectResponse<UserRefreshResponseDTO>> RefreshAsync(
-        UserRefreshRequestDTO userRefreshRequestDto)
+    public async Task<ServiceObjectResponse<AuthRefreshResponse>> RefreshAsync(
+        AuthRefreshRequest authRefreshRequest)
     {
         // Check if the refresh token is valid
-        RefreshToken? refreshToken = await refreshTokenRepository.GetByTokenValue(userRefreshRequestDto.RefreshToken);
+        RefreshToken? refreshToken = await refreshTokenRepository.GetByTokenValue(authRefreshRequest.RefreshToken);
 
         if (refreshToken == null || refreshToken.ExpiresOnUTC < DateTime.UtcNow)
         {
-            return new ServiceObjectResponse<UserRefreshResponseDTO>()
+            return new ServiceObjectResponse<AuthRefreshResponse>()
             {
                 Type = ServiceResponseType.InvalidCredentials,
                 Message = "The refresh token is not valid or has expired."
@@ -97,13 +98,13 @@ public class UserService(
         refreshToken = tokenProvider.UpdateRefreshToken(refreshToken);
         await unitOfWork.SaveChangesAsync();
 
-        UserRefreshResponseDTO userRefreshResponseDto = new UserRefreshResponseDTO()
+        AuthRefreshResponse authRefreshResponse = new AuthRefreshResponse()
         {
             AccessToken = accessToken,
             RefreshToken = refreshToken.Token
         };
-        return new ServiceObjectResponse<UserRefreshResponseDTO>()
-            { Type = ServiceResponseType.Success, Value = userRefreshResponseDto };
+        return new ServiceObjectResponse<AuthRefreshResponse>()
+            { Type = ServiceResponseType.Success, Value = authRefreshResponse };
     }
 
     // TODO: Unit test

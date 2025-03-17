@@ -1,9 +1,10 @@
 namespace SyntriceEShop.API.Models;
 
 /// <summary>
-/// Interface for all entities. Uses integer based Id for simplicity over GUID.
+/// Interface for entities with a primary key.
 /// </summary>
-public interface IEntity 
+/// <typeparam name="T">The type of the primary key (e.g. int, Guid).</typeparam>
+public interface IEntity<T>
 { 
-    int Id { get; set; }
+    T Id { get; set; }
 }

@@ -1,5 +1,7 @@
 ﻿using SyntriceEShop.API;
 using SyntriceEShop.API.ApplicationOptions;
+using SyntriceEShop.API.Models.ProductModel;
+using SyntriceEShop.API.Repositories.Implementations;
 
 var builder = WebApplication.CreateBuilder(args);
 

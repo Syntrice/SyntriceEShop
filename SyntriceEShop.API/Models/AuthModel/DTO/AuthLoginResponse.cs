@@ -1,6 +1,6 @@
-namespace SyntriceEShop.API.Services.UserServices.Models;
+namespace SyntriceEShop.API.Models.AuthModel.DTO;
 
-public class UserLoginResponseDTO
+public class AuthLoginResponse
 {
     public string AccessToken { get; set; } = string.Empty;
     public string RefreshToken { get; set; } = string.Empty;

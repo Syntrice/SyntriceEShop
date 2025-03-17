@@ -1,6 +1,6 @@
 using SyntriceEShop.API.Models.RefreshTokenModel;
 
-namespace SyntriceEShop.API.Repositories;
+namespace SyntriceEShop.API.Repositories.Interfaces;
 
 public interface IRefreshTokenRepository
 {

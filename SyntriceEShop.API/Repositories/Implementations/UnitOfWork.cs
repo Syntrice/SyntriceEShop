@@ -1,6 +1,7 @@
 using SyntriceEShop.API.Database;
+using SyntriceEShop.API.Repositories.Interfaces;
 
-namespace SyntriceEShop.API.Repositories;
+namespace SyntriceEShop.API.Repositories.Implementations;
 
 /// <summary>
 /// The UnitOfWork class is used to provide a consistent way to save changes to the database, thus allowing

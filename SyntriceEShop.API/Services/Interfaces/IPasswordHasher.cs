@@ -1,4 +1,4 @@
-namespace SyntriceEShop.API.Services.UserServices;
+namespace SyntriceEShop.API.Services.Interfaces;
 
 public interface IPasswordHasher
 { 

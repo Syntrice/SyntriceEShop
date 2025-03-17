@@ -6,7 +6,7 @@ namespace SyntriceEShop.API.Models.UserModel;
 /// <summary>
 /// Entity for application user
 /// </summary>
-public class User : IEntity
+public class User : IEntity<int>
 {
     public int Id { get; set; }
     public string Username { get; set; } = string.Empty;

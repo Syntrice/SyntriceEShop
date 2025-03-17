@@ -1,4 +1,4 @@
-namespace SyntriceEShop.API.Repositories;
+namespace SyntriceEShop.API.Repositories.Interfaces;
 
 /// <summary>
 /// The IUnitOfWork interface is used to provide a consistent way to save changes to the database, thus allowing

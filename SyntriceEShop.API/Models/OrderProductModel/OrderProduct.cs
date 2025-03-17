@@ -3,7 +3,7 @@ using SyntriceEShop.API.Models.ProductModel;
 
 namespace SyntriceEShop.API.Models.OrderProductModel;
 
-public class OrderProduct 
+public class OrderProduct
 {
     public int OrderId { get; set; }
     public int ProductId { get; set; }

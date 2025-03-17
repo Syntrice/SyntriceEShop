@@ -9,8 +9,11 @@ using SyntriceEShop.API.ApplicationOptions;
 using SyntriceEShop.API.Database;
 using SyntriceEShop.API.Models.UserModel;
 using SyntriceEShop.API.Repositories;
+using SyntriceEShop.API.Repositories.Implementations;
+using SyntriceEShop.API.Repositories.Interfaces;
 using SyntriceEShop.API.Services;
-using SyntriceEShop.API.Services.UserServices;
+using SyntriceEShop.API.Services.Implementations;
+using SyntriceEShop.API.Services.Interfaces;
 
 namespace SyntriceEShop.API;
 
@@ -61,7 +64,7 @@ public static class WebApplicationBuilderExtensions
 
     public static void SetupServices(this WebApplicationBuilder builder)
     {
-        builder.Services.AddScoped<IUserService, UserService>();
+        builder.Services.AddScoped<IAuthService, AuthService>();
         builder.Services.AddSingleton<IPasswordHasher, PasswordHasher>();
         builder.Services.AddSingleton<IJWTProvider, JWTProvider>();
     }
