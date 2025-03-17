@@ -3,12 +3,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using SyntriceEShop.API.ApplicationOptions;
+using SyntriceEShop.API.Controllers.Interfaces;
 using SyntriceEShop.API.Models.AuthModel.DTO;
-using SyntriceEShop.API.Models.UserModel;
 using SyntriceEShop.API.Services;
 using SyntriceEShop.API.Services.Interfaces;
 
-namespace SyntriceEShop.API.Controllers;
+namespace SyntriceEShop.API.Controllers.Implementations;
 
 [ApiController]
 [Route("api/auth")]

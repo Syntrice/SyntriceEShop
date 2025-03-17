@@ -5,6 +5,7 @@ using NSubstitute;
 using Shouldly;
 using SyntriceEShop.API.ApplicationOptions;
 using SyntriceEShop.API.Controllers;
+using SyntriceEShop.API.Controllers.Implementations;
 using SyntriceEShop.API.Models.AuthModel.DTO;
 using SyntriceEShop.API.Models.UserModel;
 using SyntriceEShop.API.Services;
