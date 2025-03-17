@@ -5,7 +5,7 @@ using SyntriceEShop.API.Models.UserModel.DTO;
 
 namespace SyntriceEShop.API.Controllers;
 
-public interface IUserController
+public interface IAuthController
 {
     Task<IActionResult> RegisterAsync([FromBody] UserRegisterRequest userRegisterRequest);
     Task<IActionResult> LoginAsync([FromBody] UserLoginRequest userLoginRequest, [FromQuery] bool useCookies = false);

@@ -6,13 +6,13 @@ using SyntriceEShop.API.Services.Interfaces;
 
 namespace SyntriceEShop.API.Services.Implementations;
 
-public class UserService(
+public class AuthService(
     IUserRepository userRepository,
     IRefreshTokenRepository refreshTokenRepository,
     IUnitOfWork unitOfWork,
     IPasswordHasher passwordHasher,
     IJWTProvider tokenProvider)
-    : IUserService
+    : IAuthService
 {
     public async Task<ServiceResponse> RegisterAsync(UserRegisterRequest userRegisterRequest)
     {

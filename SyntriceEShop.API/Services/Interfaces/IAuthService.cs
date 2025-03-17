@@ -2,7 +2,7 @@ using SyntriceEShop.API.Models.UserModel.DTO;
 
 namespace SyntriceEShop.API.Services.Interfaces;
 
-public interface IUserService
+public interface IAuthService
 {
     Task<ServiceResponse> RegisterAsync(UserRegisterRequest userRegisterRequest);
     Task<ServiceObjectResponse<UserLoginResponse>> LoginAsync(UserLoginRequest userLoginRequest);

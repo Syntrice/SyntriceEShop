@@ -13,20 +13,20 @@ using SyntriceEShop.API.Services.Interfaces;
 namespace SyntriceEShop.Tests.API.Controllers;
 
 [TestFixture]
-public class UserControllerTests
+public class AuthControllerTests
 {
-    private IUserService _userService;
-    private UserController _userController;
+    private IAuthService _authService;
+    private AuthController _authController;
     private IOptions<JWTOptions> _options;
     
     [SetUp]
     public void Setup()
     {
-        _userService = Substitute.For<IUserService>();
+        _authService = Substitute.For<IAuthService>();
         _options = Substitute.For<IOptions<JWTOptions>>();
         var jwtOptions = GetDefaultJWTOptions();
         _options.Value.Returns(jwtOptions);
-        _userController = new UserController(_userService, _options);
+        _authController = new AuthController(_authService, _options);
     }
     
     public static JWTOptions GetDefaultJWTOptions()
@@ -43,45 +43,45 @@ public class UserControllerTests
     }
 
     [TestFixture]
-    public class RegisterAsync : UserControllerTests
+    public class RegisterAsync : AuthControllerTests
     {
         [Test]
-        public async Task CallsUserService_RegisterAsync_WithUserRegisterDTO()
+        public async Task CallsAuthService_RegisterAsync_WithUserRegisterDTO()
         {
             // Arrange
             var userRegisterDTO = new UserRegisterRequest() { Username = "username", Password = "password" };
-            _userService.RegisterAsync(userRegisterDTO).Returns(new ServiceResponse());
+            _authService.RegisterAsync(userRegisterDTO).Returns(new ServiceResponse());
         
             // Act
-            await _userController.RegisterAsync(userRegisterDTO);
+            await _authController.RegisterAsync(userRegisterDTO);
         
             // Assert
-            await _userService.Received(1).RegisterAsync(userRegisterDTO);
+            await _authService.Received(1).RegisterAsync(userRegisterDTO);
         }
         
         [Test]
-        public async Task WhenUserService_RegisterAsyncReturnsSuccess_ReturnOkResult()
+        public async Task WhenAuthService_RegisterAsyncReturnsSuccess_ReturnOkResult()
         {
             // Arrange
             var userRegisterDTO = new UserRegisterRequest() { Username = "username", Password = "password" };
-            _userService.RegisterAsync(userRegisterDTO).Returns(new ServiceResponse() {Type = ServiceResponseType.Success});
+            _authService.RegisterAsync(userRegisterDTO).Returns(new ServiceResponse() {Type = ServiceResponseType.Success});
         
             // Act
-            var response = await _userController.RegisterAsync(userRegisterDTO);
+            var response = await _authController.RegisterAsync(userRegisterDTO);
         
             // Assert
             response.ShouldBeOfType(typeof(OkResult));
         }
         
         [Test]
-        public async Task WhenUserService_RegisterAsyncReturnsConflict_ReturnsConflictObjectResult()
+        public async Task WhenAuthService_RegisterAsyncReturnsConflict_ReturnsConflictObjectResult()
         {
             // Arrange
             var userRegisterDTO = new UserRegisterRequest() { Username = "username", Password = "password" };
-            _userService.RegisterAsync(userRegisterDTO).Returns(new ServiceResponse() {Type = ServiceResponseType.Conflict});
+            _authService.RegisterAsync(userRegisterDTO).Returns(new ServiceResponse() {Type = ServiceResponseType.Conflict});
         
             // Act
-            var response = await _userController.RegisterAsync(userRegisterDTO);
+            var response = await _authController.RegisterAsync(userRegisterDTO);
         
             // Assert
             response.ShouldBeOfType(typeof(ConflictObjectResult));
@@ -89,33 +89,33 @@ public class UserControllerTests
     }
 
     [TestFixture]
-    public class LoginAsync : UserControllerTests
+    public class LoginAsync : AuthControllerTests
     {
         [Test]
-        public async Task CallsUserService_LoginAsync_WithUseLoginDTO()
+        public async Task CallsAuthService_LoginAsync_WithUseLoginDTO()
         {
             // Arrange
             var userLoginDTO = new UserLoginRequest() { Username = "username", Password = "password" };
-            _userService.LoginAsync(userLoginDTO).Returns(new ServiceObjectResponse<UserLoginResponse>());
+            _authService.LoginAsync(userLoginDTO).Returns(new ServiceObjectResponse<UserLoginResponse>());
         
             // Act
-            await _userController.LoginAsync(userLoginDTO);
+            await _authController.LoginAsync(userLoginDTO);
         
             // Assert
-            await _userService.Received(1).LoginAsync(userLoginDTO);
+            await _authService.Received(1).LoginAsync(userLoginDTO);
         }
         
         [Test]
-        public async Task WhenUserService_LoginAsyncReturnsSuccess_ReturnOkObjectResultWithTokens()
+        public async Task WhenAuthService_LoginAsyncReturnsSuccess_ReturnOkObjectResultWithTokens()
         {
             // Arrange
             var userLoginDTO = new UserLoginRequest() { Username = "username", Password = "password" };
             var userLoginResponseDTO = new UserLoginResponse() { AccessToken = "token", RefreshToken = "refreshToken" };
             var serviceResponse = new ServiceObjectResponse<UserLoginResponse>() {Type = ServiceResponseType.Success, Value = userLoginResponseDTO};
-            _userService.LoginAsync(userLoginDTO).Returns(serviceResponse);
+            _authService.LoginAsync(userLoginDTO).Returns(serviceResponse);
         
             // Act
-            var response = await _userController.LoginAsync(userLoginDTO);
+            var response = await _authController.LoginAsync(userLoginDTO);
         
             // Assert
             response.ShouldBeOfType(typeof(OkObjectResult));
@@ -124,30 +124,30 @@ public class UserControllerTests
         }
         
         [Test]
-        public async Task WhenUserService_LoginAsyncReturnsNotFound_ReturnNotFoundObjectResult()
+        public async Task WhenAuthService_LoginAsyncReturnsNotFound_ReturnNotFoundObjectResult()
         {
             // Arrange
             var userLoginDTO = new UserLoginRequest() { Username = "username", Password = "password" };
             var serviceResponse = new ServiceObjectResponse<UserLoginResponse>() {Type = ServiceResponseType.NotFound};
-            _userService.LoginAsync(userLoginDTO).Returns(serviceResponse);
+            _authService.LoginAsync(userLoginDTO).Returns(serviceResponse);
         
             // Act
-            var response = await _userController.LoginAsync(userLoginDTO);
+            var response = await _authController.LoginAsync(userLoginDTO);
         
             // Assert
             response.ShouldBeOfType(typeof(NotFoundObjectResult));
         }
         
         [Test]
-        public async Task WhenUserService_LoginAsyncReturnsInvalidCredentials_ReturnUnauthorizedObjectResult()
+        public async Task WhenAuthService_LoginAsyncReturnsInvalidCredentials_ReturnUnauthorizedObjectResult()
         {
             // Arrange
             var userLoginDTO = new UserLoginRequest() { Username = "username", Password = "password" };
             var serviceResponse = new ServiceObjectResponse<UserLoginResponse>() {Type = ServiceResponseType.InvalidCredentials};
-            _userService.LoginAsync(userLoginDTO).Returns(serviceResponse);
+            _authService.LoginAsync(userLoginDTO).Returns(serviceResponse);
         
             // Act
-            var response = await _userController.LoginAsync(userLoginDTO);
+            var response = await _authController.LoginAsync(userLoginDTO);
         
             // Assert
             response.ShouldBeOfType(typeof(UnauthorizedObjectResult));
@@ -176,51 +176,51 @@ public class UserControllerTests
     }
 
     [TestFixture]
-    public class RefreshAsync : UserControllerTests
+    public class RefreshAsync : AuthControllerTests
     {
         [Test]
-        public async Task CallsUserService_RefreshAsync_WithUserRefreshRequestDTO()
+        public async Task CallsAuthService_RefreshAsync_WithUserRefreshRequestDTO()
         {
             // Arrange
             var userRefreshRequestDto = new UserRefreshRequest() { RefreshToken = "refreshToken" };
             var response = new ServiceObjectResponse<UserRefreshResponse>();
-            _userService.RefreshAsync(userRefreshRequestDto).Returns(response);
+            _authService.RefreshAsync(userRefreshRequestDto).Returns(response);
 
             // Act
-            await _userController.RefreshAsync(userRefreshRequestDto);
+            await _authController.RefreshAsync(userRefreshRequestDto);
 
             // Assert
-            await _userService.Received(1).RefreshAsync(userRefreshRequestDto);
+            await _authService.Received(1).RefreshAsync(userRefreshRequestDto);
         }
 
         [Test]
-        public async Task WhenUserService_RefreshAsyncReturnsInvalidCredentials_ReturnUnauthorizedObjectResult()
+        public async Task WhenAuthService_RefreshAsyncReturnsInvalidCredentials_ReturnUnauthorizedObjectResult()
         {
             // Arrange
             var userRefreshRequestDto = new UserRefreshRequest() { RefreshToken = "refreshToken" };
             var response = new ServiceObjectResponse<UserRefreshResponse>()
                 { Type = ServiceResponseType.InvalidCredentials };
-            _userService.RefreshAsync(userRefreshRequestDto).Returns(response);
+            _authService.RefreshAsync(userRefreshRequestDto).Returns(response);
 
             // Act
-            var result = await _userController.RefreshAsync(userRefreshRequestDto);
+            var result = await _authController.RefreshAsync(userRefreshRequestDto);
 
             // Assert
             result.ShouldBeOfType(typeof(UnauthorizedObjectResult));
         }
 
         [Test]
-        public async Task WhenUserService_RefreshAsyncReturnsSuccess_ReturnOkObjectResultWithTokens()
+        public async Task WhenAuthService_RefreshAsyncReturnsSuccess_ReturnOkObjectResultWithTokens()
         {
             // Arrange
             var refreshRequestDTO = new UserRefreshRequest() { RefreshToken = "refreshToken" };
             var userRefreshResponseDTO = new UserRefreshResponse() { AccessToken = "token", RefreshToken = "refreshToken" };
             var response = new ServiceObjectResponse<UserRefreshResponse>()
                 { Type = ServiceResponseType.Success, Value = userRefreshResponseDTO};
-            _userService.RefreshAsync(refreshRequestDTO).Returns(response);
+            _authService.RefreshAsync(refreshRequestDTO).Returns(response);
 
             // Act
-            var result = await _userController.RefreshAsync(refreshRequestDTO);
+            var result = await _authController.RefreshAsync(refreshRequestDTO);
 
             // Assert
             result.ShouldBeOfType(typeof(OkObjectResult));

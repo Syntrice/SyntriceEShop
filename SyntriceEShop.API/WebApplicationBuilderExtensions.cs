@@ -64,7 +64,7 @@ public static class WebApplicationBuilderExtensions
 
     public static void SetupServices(this WebApplicationBuilder builder)
     {
-        builder.Services.AddScoped<IUserService, UserService>();
+        builder.Services.AddScoped<IAuthService, AuthService>();
         builder.Services.AddSingleton<IPasswordHasher, PasswordHasher>();
         builder.Services.AddSingleton<IJWTProvider, JWTProvider>();
     }

@@ -13,13 +13,13 @@ using SyntriceEShop.API.Services.Interfaces;
 namespace SyntriceEShop.Tests.API.Services.UserServices;
 
 [TestFixture]
-public class UserServiceTests
+public class AuthServiceTests
 {
     private IUserRepository _repository;
     private IUnitOfWork _unitOfWork;
     private IPasswordHasher _passwordHasher;
     private IJWTProvider _tokenProvider;
-    private UserService _userService;
+    private AuthService _authService;
     private IRefreshTokenRepository _refreshTokenRepository;
 
     [SetUp]
@@ -30,11 +30,11 @@ public class UserServiceTests
         _passwordHasher = Substitute.For<IPasswordHasher>();
         _tokenProvider = Substitute.For<IJWTProvider>();
         _refreshTokenRepository = Substitute.For<IRefreshTokenRepository>();
-        _userService = new UserService(_repository, _refreshTokenRepository, _unitOfWork, _passwordHasher, _tokenProvider);
+        _authService = new AuthService(_repository, _refreshTokenRepository, _unitOfWork, _passwordHasher, _tokenProvider);
     }
     
     [TestFixture]
-    public class RegisterAsync : UserServiceTests
+    public class RegisterAsync : AuthServiceTests
     {
         [Test]
         public async Task CallsUnitOfWork_SaveChangesAsync()
@@ -43,7 +43,7 @@ public class UserServiceTests
             var userRegisterDTO = new UserRegisterRequest() { Username = "username", Password = "password" };
 
             // Act
-            await _userService.RegisterAsync(userRegisterDTO);
+            await _authService.RegisterAsync(userRegisterDTO);
 
             // Assert
             await _unitOfWork.Received(1).SaveChangesAsync();
@@ -56,7 +56,7 @@ public class UserServiceTests
             var userRegisterDTO = new UserRegisterRequest() { Username = "username", Password = "password" };
 
             // Act
-            await _userService.RegisterAsync(userRegisterDTO);
+            await _authService.RegisterAsync(userRegisterDTO);
 
             // Assert
             _repository.Received(1).Add(Arg.Any<User>());
@@ -69,7 +69,7 @@ public class UserServiceTests
             var userRegisterDTO = new UserRegisterRequest() { Username = "username", Password = "password" };
 
             // Act
-            await _userService.RegisterAsync(userRegisterDTO);
+            await _authService.RegisterAsync(userRegisterDTO);
 
             // Assert
             _passwordHasher.Received(1).Hash(userRegisterDTO.Password);
@@ -82,7 +82,7 @@ public class UserServiceTests
             var userRegisterDTO = new UserRegisterRequest() { Username = "username", Password = "password" };
 
             // Act
-            await _userService.RegisterAsync(userRegisterDTO);
+            await _authService.RegisterAsync(userRegisterDTO);
 
             // Assert
             await _repository.Received(1).UsernameExistsAsync(userRegisterDTO.Username);
@@ -96,7 +96,7 @@ public class UserServiceTests
             _repository.UsernameExistsAsync(userRegisterDTO.Username).Returns(true);
 
             // Act
-            var response = await _userService.RegisterAsync(userRegisterDTO);
+            var response = await _authService.RegisterAsync(userRegisterDTO);
 
             // Assert
             response.Type.ShouldBe(ServiceResponseType.Conflict);
@@ -110,7 +110,7 @@ public class UserServiceTests
             _repository.UsernameExistsAsync(userRegisterDTO.Username).Returns(false);
 
             // Act
-            var response = await _userService.RegisterAsync(userRegisterDTO);
+            var response = await _authService.RegisterAsync(userRegisterDTO);
 
             // Assert
             response.Type.ShouldBe(ServiceResponseType.Success);
@@ -118,7 +118,7 @@ public class UserServiceTests
     }
 
     [TestFixture]
-    public class LoginAsync : UserServiceTests
+    public class LoginAsync : AuthServiceTests
     {
         [Test]
         public async Task CallsRepository_GetUserByUsernameAsync_WithCorrectParameters()
@@ -127,7 +127,7 @@ public class UserServiceTests
             var userLoginDTO = new UserLoginRequest() { Username = "username", Password = "password" };
 
             // Act
-            await _userService.LoginAsync(userLoginDTO);
+            await _authService.LoginAsync(userLoginDTO);
 
             // Assert
             await _repository.Received(1).GetUserByUsernameAsync(userLoginDTO.Username);
@@ -142,7 +142,7 @@ public class UserServiceTests
             _repository.GetUserByUsernameAsync(userLoginDTO.Username).Returns(userEntity);
 
             // Act
-            await _userService.LoginAsync(userLoginDTO);
+            await _authService.LoginAsync(userLoginDTO);
 
             // Assert
             _passwordHasher.Received(1).Verify(userLoginDTO.Password, userEntity.PasswordHash);
@@ -160,7 +160,7 @@ public class UserServiceTests
             _tokenProvider.GenerateRefreshToken(userEntity).Returns(new RefreshToken());
 
             // Act
-            await _userService.LoginAsync(userLoginDTO);
+            await _authService.LoginAsync(userLoginDTO);
 
             // Assert
             _tokenProvider.Received(1).GenerateToken(userEntity);
@@ -178,7 +178,7 @@ public class UserServiceTests
             _tokenProvider.GenerateRefreshToken(userEntity).Returns(new RefreshToken());
             
             // Act
-            await _userService.LoginAsync(userLoginDTO);
+            await _authService.LoginAsync(userLoginDTO);
 
             // Assert
             _tokenProvider.Received(1).GenerateRefreshToken(userEntity);
@@ -193,7 +193,7 @@ public class UserServiceTests
             _repository.GetUserByUsernameAsync(userLoginDTO.Username).ReturnsNull();
 
             // Act
-            var response = await _userService.LoginAsync(userLoginDTO);
+            var response = await _authService.LoginAsync(userLoginDTO);
 
             // Assert
             response.Type.ShouldBe(ServiceResponseType.NotFound);
@@ -207,7 +207,7 @@ public class UserServiceTests
             _repository.GetUserByUsernameAsync(userLoginDTO.Username).ReturnsNull();
 
             // Act
-            var response = await _userService.LoginAsync(userLoginDTO);
+            var response = await _authService.LoginAsync(userLoginDTO);
 
             // Assert
             response.Type.ShouldBe(ServiceResponseType.NotFound);
@@ -226,7 +226,7 @@ public class UserServiceTests
             _tokenProvider.GenerateRefreshToken(userEntity).Returns(new RefreshToken());
 
             // Act
-            var response = await _userService.LoginAsync(userLoginDTO);
+            var response = await _authService.LoginAsync(userLoginDTO);
 
             // Assert
             response.Type.ShouldBe(ServiceResponseType.Success);
@@ -251,7 +251,7 @@ public class UserServiceTests
             _tokenProvider.GenerateRefreshToken(userEntity).Returns(refreshToken);
 
             // Act
-            var response = await _userService.LoginAsync(userLoginDTO);
+            var response = await _authService.LoginAsync(userLoginDTO);
 
             // Assert
             response.Type.ShouldBe(ServiceResponseType.Success);
@@ -260,7 +260,7 @@ public class UserServiceTests
     }
 
     [TestFixture]
-    public class RefreshAsync : UserServiceTests
+    public class RefreshAsync : AuthServiceTests
     {
         [Test]
         public async Task CallsRefreshTokenRepository_GetByTokenValue_WithInputTokenValue()
@@ -269,7 +269,7 @@ public class UserServiceTests
             var userRefreshRequestDto = new UserRefreshRequest() { RefreshToken = "refreshToken" };
 
             // Act
-            var result = await _userService.RefreshAsync(userRefreshRequestDto);
+            var result = await _authService.RefreshAsync(userRefreshRequestDto);
 
             // Assert
             await _refreshTokenRepository.Received(1).GetByTokenValue(userRefreshRequestDto.RefreshToken);
@@ -286,7 +286,7 @@ public class UserServiceTests
             _tokenProvider.UpdateRefreshToken(refreshToken).Returns(refreshToken);
             
             // Act
-            var result = await _userService.RefreshAsync(userRefreshRequestDto);
+            var result = await _authService.RefreshAsync(userRefreshRequestDto);
             
             // Assert
             _tokenProvider.Received(1).GenerateToken(refreshToken.User);
@@ -303,7 +303,7 @@ public class UserServiceTests
             _tokenProvider.UpdateRefreshToken(refreshToken).Returns(refreshToken);
             
             // Act
-            var result = await _userService.RefreshAsync(userRefreshRequestDto);
+            var result = await _authService.RefreshAsync(userRefreshRequestDto);
             
             // Assert
             _tokenProvider.Received(1).UpdateRefreshToken(refreshToken);
@@ -318,7 +318,7 @@ public class UserServiceTests
 
             
             // Act
-            var result = await _userService.RefreshAsync(userRefreshRequestDto);
+            var result = await _authService.RefreshAsync(userRefreshRequestDto);
             
             // Assert
             result.Type.ShouldBe(ServiceResponseType.InvalidCredentials);
@@ -334,7 +334,7 @@ public class UserServiceTests
             _refreshTokenRepository.GetByTokenValue(userRefreshRequestDto.RefreshToken).Returns(refreshToken);
             
             // Act
-            var result = await _userService.RefreshAsync(userRefreshRequestDto);
+            var result = await _authService.RefreshAsync(userRefreshRequestDto);
             
             // Assert
             result.Type.ShouldBe(ServiceResponseType.InvalidCredentials);
@@ -358,7 +358,7 @@ public class UserServiceTests
             
             
             // Act
-            var result = await _userService.RefreshAsync(userRefreshRequestDto);
+            var result = await _authService.RefreshAsync(userRefreshRequestDto);
             
             // Assert
             result.Type.ShouldBe(ServiceResponseType.Success);
@@ -368,7 +368,7 @@ public class UserServiceTests
     }
 
     [TestFixture]
-    public class RevokeRefreshTokensAsync : UserServiceTests
+    public class RevokeRefreshTokensAsync : AuthServiceTests
     {
         [Test]
         public async Task CallsRefreshTokenRepository_RemoveAllByUserIdAsync_WithInputUserId()
@@ -377,7 +377,7 @@ public class UserServiceTests
             var userId = 1;
             
             // Act
-            var result = await _userService.RevokeRefreshTokensAsync(userId);
+            var result = await _authService.RevokeRefreshTokensAsync(userId);
             
             // Assert
             await _refreshTokenRepository.Received(1).RemoveAllByUserIdAsync(userId);
@@ -390,7 +390,7 @@ public class UserServiceTests
             var userId = 1;
             
             // Act
-            var result = await _userService.RevokeRefreshTokensAsync(userId);
+            var result = await _authService.RevokeRefreshTokensAsync(userId);
             
             // Assert
             await _unitOfWork.Received(1).SaveChangesAsync();

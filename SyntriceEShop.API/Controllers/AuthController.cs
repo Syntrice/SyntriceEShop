@@ -12,13 +12,13 @@ namespace SyntriceEShop.API.Controllers;
 
 [ApiController]
 [Route("api/user")]
-public class UserController(IUserService userService, IOptions<JWTOptions> jwtOptions) : ControllerBase, IUserController
+public class AuthController(IAuthService authService, IOptions<JWTOptions> jwtOptions) : ControllerBase, IAuthController
 {
     [HttpPost]
     [Route("register")]
     public async Task<IActionResult> RegisterAsync([FromBody] UserRegisterRequest userRegisterRequest)
     {
-        var result = await userService.RegisterAsync(userRegisterRequest);
+        var result = await authService.RegisterAsync(userRegisterRequest);
 
         switch (result.Type)
         {
@@ -36,7 +36,7 @@ public class UserController(IUserService userService, IOptions<JWTOptions> jwtOp
     public async Task<IActionResult> LoginAsync([FromBody] UserLoginRequest userLoginRequest,
         [FromQuery] bool useCookies = false)
     {
-        var result = await userService.LoginAsync(userLoginRequest);
+        var result = await authService.LoginAsync(userLoginRequest);
 
         if (result is { Type: ServiceResponseType.Success, Value: not null }) 
         {
@@ -103,7 +103,7 @@ public class UserController(IUserService userService, IOptions<JWTOptions> jwtOp
             }
             var userRefreshRequestDtoFromCookies = new UserRefreshRequest() { RefreshToken = refreshTokenCookie };
             
-            var result = await userService.RefreshAsync(userRefreshRequestDtoFromCookies);
+            var result = await authService.RefreshAsync(userRefreshRequestDtoFromCookies);
 
             // If success update cookies
             if (result is { Type: ServiceResponseType.Success, Value: not null })
@@ -140,7 +140,7 @@ public class UserController(IUserService userService, IOptions<JWTOptions> jwtOp
         }
         else
         {
-            var result = await userService.RefreshAsync(userRefreshRequest);
+            var result = await authService.RefreshAsync(userRefreshRequest);
             
             return result.Type switch
             {
@@ -166,7 +166,7 @@ public class UserController(IUserService userService, IOptions<JWTOptions> jwtOp
             return Unauthorized();
         }
 
-        var result = await userService.RevokeRefreshTokensAsync(id);
+        var result = await authService.RevokeRefreshTokensAsync(id);
 
         switch (result.Type)
         {
