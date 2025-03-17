@@ -60,13 +60,23 @@ public static class WebApplicationBuilderExtensions
         builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
         builder.Services.AddScoped<IUserRepository, UserRepository>();
         builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+        builder.Services.AddScoped<IUserRepository, UserRepository>();
+        builder.Services.AddScoped<IShoppingCartRepository, ShoppingCartRepository>();
+        builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+        builder.Services.AddScoped<IProductRepository, ProductRepository>();
+        builder.Services.AddScoped<IProductCategoryRepository, ProductCategoryRepository>();
     }
 
     public static void SetupServices(this WebApplicationBuilder builder)
     {
-        builder.Services.AddScoped<IAuthService, AuthService>();
         builder.Services.AddSingleton<IPasswordHasher, PasswordHasher>();
         builder.Services.AddSingleton<IJWTProvider, JWTProvider>();
+        builder.Services.AddScoped<IAuthService, AuthService>();
+        builder.Services.AddScoped<IUserService, UserService>();
+        builder.Services.AddScoped<IShoppingCartService, ShoppingCartService>();
+        builder.Services.AddScoped<IOrderService, OrderService>();
+        builder.Services.AddScoped<IProductService, ProductService>();
+        builder.Services.AddScoped<IProductCategoryService, ProductCategoryService>();
     }
 
     public static void SetupAuthentication(this WebApplicationBuilder builder)
