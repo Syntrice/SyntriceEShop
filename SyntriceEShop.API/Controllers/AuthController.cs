@@ -3,8 +3,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using SyntriceEShop.API.ApplicationOptions;
+using SyntriceEShop.API.Models.AuthModel.DTO;
 using SyntriceEShop.API.Models.UserModel;
-using SyntriceEShop.API.Models.UserModel.DTO;
 using SyntriceEShop.API.Services;
 using SyntriceEShop.API.Services.Interfaces;
 
@@ -16,9 +16,9 @@ public class AuthController(IAuthService authService, IOptions<JWTOptions> jwtOp
 {
     [HttpPost]
     [Route("register")]
-    public async Task<IActionResult> RegisterAsync([FromBody] UserRegisterRequest userRegisterRequest)
+    public async Task<IActionResult> RegisterAsync([FromBody] AuthRegisterRequest authRegisterRequest)
     {
-        var result = await authService.RegisterAsync(userRegisterRequest);
+        var result = await authService.RegisterAsync(authRegisterRequest);
 
         switch (result.Type)
         {
@@ -33,10 +33,10 @@ public class AuthController(IAuthService authService, IOptions<JWTOptions> jwtOp
 
     [HttpPost]
     [Route("login")]
-    public async Task<IActionResult> LoginAsync([FromBody] UserLoginRequest userLoginRequest,
+    public async Task<IActionResult> LoginAsync([FromBody] AuthLoginRequest authLoginRequest,
         [FromQuery] bool useCookies = false)
     {
-        var result = await authService.LoginAsync(userLoginRequest);
+        var result = await authService.LoginAsync(authLoginRequest);
 
         if (result is { Type: ServiceResponseType.Success, Value: not null }) 
         {
@@ -91,7 +91,7 @@ public class AuthController(IAuthService authService, IOptions<JWTOptions> jwtOp
 
     [HttpPost]
     [Route("refresh")]
-    public async Task<IActionResult> RefreshAsync([FromBody] UserRefreshRequest userRefreshRequest, [FromQuery] bool useCookies = false)
+    public async Task<IActionResult> RefreshAsync([FromBody] AuthRefreshRequest authRefreshRequest, [FromQuery] bool useCookies = false)
     {
         if (useCookies) // TODO: Unit tests
         {
@@ -101,7 +101,7 @@ public class AuthController(IAuthService authService, IOptions<JWTOptions> jwtOp
             {
                 return BadRequest();
             }
-            var userRefreshRequestDtoFromCookies = new UserRefreshRequest() { RefreshToken = refreshTokenCookie };
+            var userRefreshRequestDtoFromCookies = new AuthRefreshRequest() { RefreshToken = refreshTokenCookie };
             
             var result = await authService.RefreshAsync(userRefreshRequestDtoFromCookies);
 
@@ -140,7 +140,7 @@ public class AuthController(IAuthService authService, IOptions<JWTOptions> jwtOp
         }
         else
         {
-            var result = await authService.RefreshAsync(userRefreshRequest);
+            var result = await authService.RefreshAsync(authRefreshRequest);
             
             return result.Type switch
             {

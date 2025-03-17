@@ -21,6 +21,7 @@
       <Folder Include="Models\ProductModel\DTO\" />
       <Folder Include="Models\RefreshTokenModel\DTO\" />
       <Folder Include="Models\ShoppingCartModel\DTO\" />
+      <Folder Include="Models\UserModel\DTO\" />
     </ItemGroup>
 
 </Project>

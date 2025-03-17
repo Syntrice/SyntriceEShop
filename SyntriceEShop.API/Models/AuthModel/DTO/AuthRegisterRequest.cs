@@ -1,6 +1,6 @@
-namespace SyntriceEShop.API.Models.UserModel.DTO;
+namespace SyntriceEShop.API.Models.AuthModel.DTO;
 
-public class UserLoginRequest
+public class AuthRegisterRequest
 {
     public string Username { get; set; } = string.Empty;
     public string Password { get; set; } = string.Empty;
