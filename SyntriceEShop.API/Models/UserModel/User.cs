@@ -1,4 +1,5 @@
 using SyntriceEShop.API.Models.OrderModel;
+using SyntriceEShop.API.Models.ProductModel;
 using SyntriceEShop.API.Models.ShoppingCartModel;
 
 namespace SyntriceEShop.API.Models.UserModel;
@@ -13,6 +14,7 @@ public class User : IEntity<int>
     public string PasswordHash { get; set; } = string.Empty;
     
     // Navigation properties
-    public IEnumerable<Order> Orders { get; set; } = [];
+    public IEnumerable<Order> Orders { get; } = [];
     public ShoppingCart? ShoppingCart { get; set; }
+    public IEnumerable<Product> Products { get; } = [];
 }
