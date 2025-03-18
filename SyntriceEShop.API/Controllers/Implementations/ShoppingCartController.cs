@@ -16,14 +16,14 @@ public class ShoppingCartController : ControllerBase, IShoppingCartController
     
     [HttpDelete]
     [Route("{id:int}")]
-    public async Task<IActionResult> DeleteShoppingCartAsync([FromRoute] int id)
+    public async Task<IActionResult> DeleteShoppingCartByIdAsync([FromRoute] int id)
     {
         return Ok();
     }
     
     [HttpPut]
     [Route("{id:int}")]
-    public async Task<IActionResult> UpdateShoppingCartAsync([FromRoute] int id, [FromBody] UpdateShoppingCartRequest updateShoppingCartRequest)
+    public async Task<IActionResult> UpdateShoppingCartByIdAsync([FromRoute] int id, [FromBody] UpdateShoppingCartRequest updateShoppingCartRequest)
     {
         return Ok();
     }

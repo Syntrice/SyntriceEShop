@@ -29,7 +29,7 @@ public class OrderController : ControllerBase, IOrderController
     
     [HttpDelete]
     [Route("{id:int}")]
-    public async Task<IActionResult> DeleteOrderAsync([FromRoute] int id)
+    public async Task<IActionResult> DeleteOrderByIdAsync([FromRoute] int id)
     {
         return Ok();
     }

@@ -23,21 +23,21 @@ public class ProductController : ControllerBase, IProductController
     }
     
     [HttpPost]
-    public async Task<IActionResult> AddProductAsync([FromBody] AddProductRequest updateProductRequest)
+    public async Task<IActionResult> AddProductAsync([FromBody] AddProductRequest addProductRequest)
     {
         return Ok();
     }
     
     [HttpDelete]
     [Route("{id:int}")]
-    public async Task<IActionResult> DeleteProductAsync([FromRoute] int id)
+    public async Task<IActionResult> DeleteProductByIdAsync([FromRoute] int id)
     {
         return Ok();
     }
     
     [HttpPut]
     [Route("{id:int}")]
-    public async Task<IActionResult> UpdateProductAsync([FromRoute] int id, [FromBody] UpdateProductRequest updateProductRequest)
+    public async Task<IActionResult> UpdateProductByIdAsync([FromRoute] int id, [FromBody] UpdateProductRequest updateProductRequest)
     {
         return Ok();
     }
