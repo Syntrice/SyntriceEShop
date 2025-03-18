@@ -19,6 +19,6 @@ A work-in-progress e-commerce system example, consisting of backend API (WIP) an
 
 ## Licence
 
-This project is licenced under MIT.
+This project is licenced under MIT
 
 
