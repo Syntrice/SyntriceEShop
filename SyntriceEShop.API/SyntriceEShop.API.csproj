@@ -16,11 +16,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Models\OrderModel\DTO\" />
-      <Folder Include="Models\ProductCategoryModel\DTO\" />
-      <Folder Include="Models\ProductModel\DTO\" />
       <Folder Include="Models\RefreshTokenModel\DTO\" />
-      <Folder Include="Models\ShoppingCartModel\DTO\" />
       <Folder Include="Models\UserModel\DTO\" />
     </ItemGroup>
 

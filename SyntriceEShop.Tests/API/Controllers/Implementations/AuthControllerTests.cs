@@ -1,16 +1,14 @@
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using NSubstitute;
 using Shouldly;
 using SyntriceEShop.API.ApplicationOptions;
-using SyntriceEShop.API.Controllers;
+using SyntriceEShop.API.Controllers.Implementations;
 using SyntriceEShop.API.Models.AuthModel.DTO;
-using SyntriceEShop.API.Models.UserModel;
 using SyntriceEShop.API.Services;
 using SyntriceEShop.API.Services.Interfaces;
 
-namespace SyntriceEShop.Tests.API.Controllers;
+namespace SyntriceEShop.Tests.API.Controllers.Implementations;
 
 [TestFixture]
 public class AuthControllerTests

@@ -10,6 +10,7 @@ public class Product : IEntity<int>
     public string Name { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
     public int QuantityInStock { get; set; }
+    public int UserId { get; set; }
     
     // Navigation properties
     public ProductCategory ProductCategory { get; set; } = null!;

@@ -1,9 +1,7 @@
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using SyntriceEShop.API.Models.AuthModel.DTO;
-using SyntriceEShop.API.Models.UserModel;
 
-namespace SyntriceEShop.API.Controllers;
+namespace SyntriceEShop.API.Controllers.Interfaces;
 
 public interface IAuthController
 {
