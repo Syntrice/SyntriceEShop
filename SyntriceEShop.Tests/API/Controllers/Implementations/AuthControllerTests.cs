@@ -155,21 +155,21 @@ public class AuthControllerTests
         public async Task WhenUseCookiesTrue_ReturnsRefreshTokenCookie()
         {
             // TODO
-            Assert.Ignore();
+            Assert.Inconclusive();
         }
 
         [Test]
         public async Task WhenUseCookiesTrue_ReturnsAccessTokenCookie()
         {
             // TODO
-            Assert.Ignore();
+            Assert.Inconclusive();
         }
 
         [Test]
         public async Task WhenUseCookiesTrue_ReturnsEmptyBody()
         {
             // TODO
-            Assert.Ignore();
+            Assert.Inconclusive();
         }
     }
 
