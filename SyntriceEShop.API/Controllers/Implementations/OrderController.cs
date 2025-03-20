@@ -74,7 +74,7 @@ public class OrderController(IOrderService orderService) : ControllerBase, IOrde
         
         if (result.Type == ServiceResponseType.Success)
         {
-            return Ok();
+            return NoContent();
         }
         
         if (result.Type == ServiceResponseType.NotFound)

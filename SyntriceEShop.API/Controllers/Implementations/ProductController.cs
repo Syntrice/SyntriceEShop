@@ -73,7 +73,7 @@ public class ProductController(IProductService productService) : ControllerBase,
 
         if (result.Type == ServiceResponseType.Success)
         {
-            return Ok();
+            return NoContent();
         }
         
         if (result.Type == ServiceResponseType.NotFound)
@@ -92,7 +92,7 @@ public class ProductController(IProductService productService) : ControllerBase,
         
         if (result.Type == ServiceResponseType.Success)
         {
-            return Ok();
+            return NoContent();
         }
         
         if (result.Type == ServiceResponseType.NotFound)

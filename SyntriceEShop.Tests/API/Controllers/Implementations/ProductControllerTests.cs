@@ -168,7 +168,8 @@ public class ProductControllerTests
             var serviceResult = new ServiceObjectResponse<int>()
             {
                 Type = ServiceResponseType.Success,
-                Value = id
+                Value = id,
+                Message = "message"
             };
             _productService.AddProductAsync(addProductRequest).Returns(serviceResult);
             
@@ -244,7 +245,7 @@ public class ProductControllerTests
         }
         
         [Test]
-        public async Task WhenProductService_ReturnsSuccess_ReturnsOkResult()
+        public async Task WhenProductService_ReturnsSuccess_ReturnsNoContentResult()
         {
             // Arrange
             var serviceResult = new ServiceObjectResponse<int>()
@@ -257,7 +258,7 @@ public class ProductControllerTests
             var result = await _controller.DeleteProductByIdAsync(1);
             
             // Assert
-            result.ShouldBeOfType(typeof(OkResult));
+            result.ShouldBeOfType(typeof(NoContentResult));
         }
         
         [Test]
@@ -299,7 +300,7 @@ public class ProductControllerTests
         }
 
         [Test]
-        public async Task WhenProductService_ReturnsSuccess_ReturnsOkResult()
+        public async Task WhenProductService_ReturnsSuccess_ReturnsNoContentResult()
         {
             // Arrange
             int id = 1;
@@ -314,7 +315,7 @@ public class ProductControllerTests
             var result = await _controller.UpdateProductByIdAsync(id, updateProductRequest);
 
             // Assert
-            result.ShouldBeOfType(typeof(OkResult));
+            result.ShouldBeOfType(typeof(NoContentResult));
         }
         
         [Test]
@@ -366,6 +367,7 @@ public class ProductControllerTests
             var serviceResult = new ServiceObjectResponse<int>()
             {
                 Type = ServiceResponseType.Conflict,
+                Message = "message"
             };
             _productService.UpdateProductByIdAsync(id, updateProductRequest).Returns(serviceResult);
             

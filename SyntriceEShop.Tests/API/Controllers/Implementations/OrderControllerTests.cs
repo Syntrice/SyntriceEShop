@@ -249,7 +249,7 @@ public class OrderControllerTests
         }
         
         [Test]
-        public async Task WhenOrderService_ReturnsSuccess_ReturnsOkResult()
+        public async Task WhenOrderService_ReturnsSuccess_ReturnsNoContentResult()
         {
             // Arrange
             int id = 1;
@@ -263,7 +263,7 @@ public class OrderControllerTests
             var result = await _orderController.DeleteOrderByIdAsync(id);
             
             // Assert
-            result.ShouldBeOfType<OkResult>();
+            result.ShouldBeOfType<NoContentResult>();
         }
         
         [Test]
