@@ -50,7 +50,7 @@ public class OrderController(IOrderService orderService) : ControllerBase, IOrde
         
         if (result.Type == ServiceResponseType.Success)
         {
-            return Ok(result.Value);
+            return CreatedAtRoute("GetOrderByIdAsync", new { id = result.Value });
         }
         
         if (result.Type == ServiceResponseType.Conflict)

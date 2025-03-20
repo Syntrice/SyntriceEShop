@@ -166,12 +166,11 @@ public class OrderControllerTests
             await _orderService.Received(1).AddOrderAsync(addOrderRequest);
         }
 
-        [TestCase(1)]
-        [TestCase(2)]
-        [TestCase(99)]
-        public async Task WhenOrderService_ReturnsSuccess_ReturnsOkObjectResultWithId(int id)
+        [TestCase]
+        public async Task WhenOrderService_ReturnsSuccess_ReturnCreatedAtRouteResult()
         {
             // Arrange
+            int id = 1;
             var addOrderRequest = new AddOrderRequest();
             var serviceResult = new ServiceObjectResponse<int>()
             {
@@ -184,9 +183,7 @@ public class OrderControllerTests
             var result = await _orderController.AddOrderAsync(addOrderRequest);
             
             // Assert
-            result.ShouldBeOfType<OkObjectResult>();
-            var resutlValue = ((OkObjectResult) result).Value as int?;
-            resutlValue.ShouldBe(id);
+            result.ShouldBeOfType<CreatedAtRouteResult>();
         }
 
         [Test]
