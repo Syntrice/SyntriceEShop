@@ -25,7 +25,7 @@ public class ProductService : IProductService
         return new ServiceResponse();
     }
 
-    public async Task<ServiceResponse> UpdateProductAsync(int id, UpdateProductRequest updateProductRequest)
+    public async Task<ServiceResponse> UpdateProductByIdAsync(int id, UpdateProductRequest updateProductRequest)
     {
         return new ServiceResponse();
     }

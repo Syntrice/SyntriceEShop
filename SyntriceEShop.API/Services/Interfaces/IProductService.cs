@@ -8,5 +8,5 @@ public interface IProductService
     Task<ServiceObjectResponse<GetProductResponse>> GetProductByIdAsync(int id);
     Task<ServiceObjectResponse<int>> AddProductAsync(AddProductRequest addProductRequest);
     Task<ServiceResponse> DeleteProductByIdAsync(int id);
-    Task<ServiceResponse> UpdateProductAsync(int id, UpdateProductRequest updateProductRequest);
+    Task<ServiceResponse> UpdateProductByIdAsync(int id, UpdateProductRequest updateProductRequest);
 }
