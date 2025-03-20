@@ -1,7 +1,5 @@
 # Syntrice EShop 
 
-![image](https://github.com/user-attachments/assets/ce904e92-2229-47f4-912d-724dafa4d2be)
-
 A work-in-progress e-commerce system example, consisting of backend API (WIP) and frontend web app (not yet developed).
 
 ## Features
