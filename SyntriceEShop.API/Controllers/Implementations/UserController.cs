@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using SyntriceEShop.API.Controllers.Interfaces;
+using SyntriceEShop.API.Services;
 using SyntriceEShop.API.Services.Interfaces;
 
 namespace SyntriceEShop.API.Controllers.Implementations;
@@ -12,22 +13,56 @@ public class UserController(IUserService userService) : ControllerBase, IUserCon
     [Route("{id:int}/products")]
     public async Task<IActionResult> GetAllProductsByUserAsync([FromRoute] int userId)
     {
-        return Ok();
+        var result = await userService.GetAllProductsByUserAsync(userId);
+        
+        if (result.Type == ServiceResponseType.Success)
+        {
+            return Ok(result.Value);
+        }
+        
+        if (result.Type == ServiceResponseType.NotFound)
+        {
+            return NotFound();
+        }
+
+        return StatusCode(500);
     }
     
     [HttpGet]
     [Route("{id:int}/orders")]
     public async Task<IActionResult> GetAllOrdersByUserAsync([FromRoute] int userId)
     {
-        return Ok();
+        var result = await userService.GetAllOrdersByUserAsync(userId);
+        
+        if (result.Type == ServiceResponseType.Success)
+        {
+            return Ok(result.Value);
+        }
+        
+        if (result.Type == ServiceResponseType.NotFound)
+        {
+            return NotFound();
+        }
+
+        return StatusCode(500);
     }
     
     [HttpGet]
     [Route("{id:int}/shopping-cart")]
     public async Task<IActionResult> GetShoppingCartByUserAsync([FromRoute] int userId)
     {
-        return Ok();
+        var result = await userService.GetShoppingCartByUserAsync(userId);
+        
+        if (result.Type == ServiceResponseType.Success)
+        {
+            return Ok(result.Value);
+        }
+        
+        if (result.Type == ServiceResponseType.NotFound)
+        {
+            return NotFound();
+        }
+        
+        return StatusCode(500);
     }
-    
-
 }
