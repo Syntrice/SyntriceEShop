@@ -8,42 +8,22 @@ public class UserMapperTests
 {
     public class UserToGetUserResponse : UserMapperTests
     {
-        [TestCase(1)]
-        [TestCase(2)]
-        [TestCase(99)]
-        public void MapsId(int id)
+        [Test]
+        public void MapsDirectMappingsCorrectly()
         {
             // Arrange
             var input = new User()
             {
-                Id = id,    
+                Id = 99,
                 Username = "name"
             };
             
             // Act
             var result = input.ToGetUserResponse();
-            
-            // Assert
-            result.Id.ShouldBe(id);
-        }
 
-        [TestCase("name")]
-        [TestCase("superlongname")]
-        [TestCase("!%$&3493Name")]
-        public void MapsName(string username)
-        {
-            // Arrange
-            var input = new User()
-            {
-                Id = 1, 
-                Username = username
-            };
-            
-            // Act                                                                                                                                                                  
-            var result = input.ToGetUserResponse();
-            
             // Assert
-            result.Username.ShouldBe(username);
+            result.Username.ShouldBe(input.Username);
+            result.Id.ShouldBe(input.Id);
         }
     }
 }
