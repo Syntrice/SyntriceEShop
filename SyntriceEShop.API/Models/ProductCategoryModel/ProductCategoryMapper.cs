@@ -6,6 +6,10 @@ public static class ProductCategoryMapper
 {
     public static GetProductCategoryResponse ToGetProductCategoryResponse(this ProductCategory productCategory)
     {
-        return new GetProductCategoryResponse();
+        return new GetProductCategoryResponse()
+        {
+            Id = productCategory.Id,
+            Name = productCategory.Name
+        };
     }
 }
