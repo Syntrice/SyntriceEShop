@@ -1,6 +1,6 @@
 # Syntrice EShop 
 
-A work-in-progress ecommerce system example, consisting of backend API (WIP) and frontend web app (not yet developed).
+A work-in-progress ecommerce system example, consisting of backend API (WIP) and frontend web app (TBC).
 Follows test-driven-development on the Service and Controller layers.
 
 ## Features
