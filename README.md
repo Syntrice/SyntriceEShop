@@ -33,13 +33,13 @@ To build the project, you will need a copy of the [.NET 9.0 SDK](https://dotnet.
 git clone "https://github.com/Syntrice/syntrice-e-shop.git"
 
 # Navigate to repository root
-cd "./syntrice-contact-manager"
+cd "./syntrice-e-shop"
 
 # Restore dependencies
 dotnet restore
 
 # Build Project
-dotnet build "./ContactManager.sln"
+dotnet build "./SyntriceEShop.sln"
 ```
 
 The project is configured to use a local SQLite database with seeded data when running in development mode. To enable this, run with the environment variable `ASPNETCORE_ENVIRONMENT` set to `Development`. Production mode is not yet configured.
