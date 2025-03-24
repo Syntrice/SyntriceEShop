@@ -1,6 +1,6 @@
 # Syntrice EShop 
 
-A work-in-progress ecommerce system example, consisting of backend API (WIP) and frontend web app (TBC).
+A work-in-progress ecommerce API built using ASP.NET. As an exercise in authentication and cybersecurity, it features password hashing and salt generation using Pbkdf2, and configurable JWT authentication with refresh token support.
 Follows test-driven-development on the Service and Controller layers.
 
 ## Features
